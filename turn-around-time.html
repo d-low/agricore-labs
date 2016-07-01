@@ -412,122 +412,156 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
     <!--[if lte IE 8]>
       <script type="text/javascript" src="http://new.agricorlabs.com/wp-content/themes/Avada/assets/js/respond.js"></script>
     <![endif]-->
-  <script type="text/javascript">
-  var calculator = {
-    EXPEDITED_SERVICE_AVAILABLE: {
-      MICROBIAL: false,
-      PESTICIDES: false,
-      POTENCY: true,
-      RESIDUAL: true
-    },
+    <script type="text/javascript">
+    var calculator = {
+      TEST_TYPES: {
+        MICROBIAL: 'MICROBIAL',
+        PESTICIDES: 'PESTICIDES',
+        POTENCY: 'POTENCY',
+        RESIDUAL: 'RESIDUAL'
+      },
 
-    EXPEDITED_TURN_AROUND_TIMES: {
-      ONE_DAY: 'ONE_DAY',
-      SAME_DAY: 'SAME_DAY',
-      TWO_DAY: 'TWO_DAY'
-    },
+      SUBMISSION_TIMES: {
+        AFTER_TEN: 'AFTER_TEN',
+        BEFORE_TEN: 'BEFORE_TEN'
+      },
 
-    SUBMISSION_TIMES: {
-      AFTER_TEN: 'AFTER_TEN',
-      BEFORE_TEN: 'BEFORE_TEN'
-    },
+      TURN_AROUND_TIMES: {
+        SAME_DAY: 'SAME DAY',
+        ONE_DAY: 'ONE DAY',
+        TWO_DAY: 'TWO DAY',
+        FOUR_DAY: 'FOUR DAY',
+        FIVE_DAY: 'FIVE_DAY'
+      },
 
-    TEST_TYPES: {
-      MICROBIAL: 'MICROBIAL',
-      PESTICIDES: 'PESTICIDES',
-      POTENCY: 'POTENCY',
-      RESIDUAL: 'RESIDUAL'
-    },
+      TEST_TYPE_DURATION: {
+        MICROBIAL: 4,
+        PESTICIDES: 5, 
+        POTENCY: 2,
+        RESIDUAL: 2
+      },
 
-    TEST_TYPE_DURATION: {
-      MICROBIAL: 4,
-      PESTICIDES: 4, // TBD: Not yet available!
-      POTENCY: 2,
-      RESIDUAL: 2
-    },
+      AVAILABLE_TURN_AROUND_TIMES: {
+        MICROBIAL: [
+          'FOUR_DAY'
+        ],
+        PESTICIDES: [
+          'FIVE_DAY',
+        ], 
+        POTENCY: [
+          'SAME_DAY',
+          'ONE_DAY',
+          'TWO_DAY'
+        ],
+        RESIDUAL: [
+          'SAME_DAY',
+          'ONE_DAY',
+          'TWO_DAY'
+        ]
+      },
 
-    testType: null,
-    dropOffDate: null,
-    submissionTime: null,
-    expeditedTurnAroundTime: null,
-    
-    calculate: function() { 
-      var resultsDate = null;
-
-      if (!this.canCalculate(true)) {
-        return;
-      }
-
-      if (!this.expeditedTurnAroundTime) {
-        
-        // If no expedited turn around time was selected then simply add the
-        // test type duration to our current time.
-
-        resultsDate = this.dropOffDate.getTime() + 
-                      (this.TEST_TYPE_DURATION[this.testType] * 86400000);
-      }
-      else {
-        // TBD: Use expedited time
-      }
-
-      // Convert the result date from milliseconds since the epoch to a date
-      // object.
-
-      resultsDate = new Date(resultsDate);
-
-      // If the result date falls on a weekend then the result date will be the
-      // following Monday. 
-      // TBD: But what if the following Monday is a holiday? Do we need to 
-      // include a more robust date library like moment.js and include holiday 
-      // plug-ins? Maybe we just hard code a few years of holidays here
-      // instead...
-  
-      if (resultsDate.getDay() === 0) { 
-        resultsDate = new Date(resultsDate.getTime() + 86400000);
-      }
-      else if (resultsDate.getDay() === 6) { 
-        resultsDate = new Date(resultsDate.getTime() + (2 * 86400000));
-      }
+      testType: null,
+      dropOffDate: null,
+      submissionTime: null,
+      turnAroundTime: null,
       
-      return resultsDate;
-    },
+      calculate: function() { 
+        var resultsDate = null;
 
-    canCalculate: function(throwError) { 
-      var canCalculate = true;
-      var errorMesg = '';
+        if (!this.canCalculate(true)) {
+          return;
+        }
 
-      if (!this.testType ||
-          Object.keys(this.TEST_TYPES).indexOf(this.testType) === -1) {
-        errorMesg = 'Please specify a test type.';
-      }
-      else if (!this.dropOffDate ||
-               this.dropOffDate instanceof Date === false) {
-        errorMesg = 'Please specify a drop off date.';
-      }
-      else if (this.submissionTime &&
-               Object.keys(
-                this.SUBMISSION_TIMES
-               ).indexOf(this.submissionTime) === -1) { 
-        errorMesg = 'Please specify a submission time.';
-      }
-      else if (this.expeditedTurnAroundTime &&
-               Object.keys(
-                this.EXPEDITED_TURN_AROUND_TIMES
-               ).indexOf(this.expeditedTurnAroundTime) === -1) {
-        errorMesg = 'Please specify a turn around time.';
-      }
+        if (!this.expeditedTurnAroundTime) {
+          
+          // If no expedited turn around time was selected then simply add the
+          // test type duration to our current time.
 
-      if (errorMesg) {
-        canCalculate = false;
-      }
+          resultsDate = this.dropOffDate.getTime() + 
+                        (this.TEST_TYPE_DURATION[this.testType] * 86400000);
+        }
+        else {
+          // TBD: Use expedited time
+        }
 
-      if (errorMesg && throwError) { 
-        throw new Error(errorMesg);
-      }
+        // Convert the result date from milliseconds since the epoch to a date
+        // object.
 
-      return canCalculate;
-    }
-  };
-  </script>
+        resultsDate = new Date(resultsDate);
+
+        // If the result date falls on a weekend then the result date will be the
+        // following Monday. 
+        // TBD: But what if the following Monday is a holiday? Do we need to 
+        // include a more robust date library like moment.js and include holiday 
+        // plug-ins? Maybe we just hard code a few years of holidays here
+        // instead...
+    
+        if (resultsDate.getDay() === 0) { 
+          resultsDate = new Date(resultsDate.getTime() + 86400000);
+        }
+        else if (resultsDate.getDay() === 6) { 
+          resultsDate = new Date(resultsDate.getTime() + (2 * 86400000));
+        }
+        
+        return resultsDate;
+      },
+
+      canCalculate: function(throwError) { 
+        var canCalculate = true;
+        var errorMesg = '';
+
+        if (!this.testType ||
+            Object.keys(this.TEST_TYPES).indexOf(this.testType) === -1) {
+          errorMesg = 'Please specify a test type.';
+        }
+        else if (!this.dropOffDate ||
+                 this.dropOffDate instanceof Date === false) {
+          errorMesg = 'Please specify a drop off date.';
+        }
+        else if (this.submissionTime &&
+                 Object.keys(
+                  this.SUBMISSION_TIMES
+                 ).indexOf(this.submissionTime) === -1) { 
+          errorMesg = 'Please specify a submission time.';
+        }
+        else if (this.turnAroundTime &&
+                 Object.keys(
+                  this.TURN_AROUND_TIMES
+                 ).indexOf(this.expeditedTurnAroundTime) === -1) {
+          errorMesg = 'Please specify a turn around time.';
+        }
+
+        if (errorMesg) {
+          canCalculate = false;
+        }
+
+        if (errorMesg && throwError) { 
+          throw new Error(errorMesg);
+        }
+
+        return canCalculate;
+      }
+    };
+
+    /** 
+     * @description Control UI/UX depending on which type of test is selected. 
+     * The following business rules are enforced:
+     *
+     * 1) When there is only one available turn around time for the selected
+     *    test then hide step 3 by first finding the the anchor with a value of
+     *    "BEFORE 10:30AM" for the title, then find its parent element with the
+     *    fusion-fullwidth class, the parent's previous fusion-section-separator
+     *    and its previous fusion-full-width element; and hide the parent, the 
+     *    adjacent fusion-section-separateor and its previous fusion-full-width
+     *    elenent. This is *VERY* brittle, but in liue of rewriting the page to
+     *    be semantic and reusing or mocking the fusion styles, this is the
+     *    only way to hide step 3 and stp 4 for Microbial and Pesticide tests.
+     *  
+     * 
+     */
+    var calculatorBehavior = {
+
+    };
+    </script>
   </body>
 </html>
