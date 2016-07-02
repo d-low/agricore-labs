@@ -566,6 +566,9 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       turnAroundTime: [],
 
       init: function() { 
+
+        // Get test type buttons and bind onclick handlers
+
         for (var testType in calculator.TEST_TYPES) {
           this.buttons[testType] = jQuery('a.fusion-button[title=' + testType + ']');
           this.buttons[testType].on(
@@ -573,6 +576,24 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
             jQuery.proxy(this.testTypeButton_click, this)
           );
         }
+
+        // Get the drop off date (TODO), drop off time and turn around time elements
+
+        var dropOffTimeActions = jQuery('a[title="BEFORE 10:30AM"]').closest('.fusion-fullwidth');
+        var dropOffTimeSeparator = dropOffTimeActions.prev();
+        var dropOffTimeHeader = dropOffTimeSeparator.prev();
+
+        this.dropOffTime.push(
+          dropOffTimeHeader, dropOffTimeSeparator, dropOffTimeActions
+        );
+
+        var turnAroundTimeActions = jQuery('a[title="TWO DAY"]').closest('.fusion-fullwidth');
+        var turnAroundTimeSeparator = turnAroundTimeActions.prev();
+        var turnAroundTimeHeader = turnAroundTimeSeparator.prev();
+
+        this.turnAroundTime.push(
+          turnAroundTimeHeader, turnAroundTimeSeparator, turnAroundTimeActions
+        );
       },
 
       /**
@@ -587,9 +608,9 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         var newTestType = jQuery(e.target).closest('.fusion-button').attr('title');
 
         this.selectTestType(newTestType);
+        this.toggleSteps(newTestType);
 
         // TODO: 
-        // 1) Show/hide steps #3 and #4 as appropriate.
         // 2) Scroll to step #2.
       },
 
@@ -598,6 +619,9 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
        * new one.
        * @caveat We duplicate the :hover styles, which is very bad, but we're
        * working with unsemantic markup and non-reusable styles.
+       * @todo We're going to reuse these selected styles for the other
+       * sections so we might as well add the style tag so we can just add a
+       * selected class to the fusion button...
        */
       selectTestType: function(newTestType) {
 
@@ -628,7 +652,15 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
        * type.
        */
       toggleSteps: function(newTestType) {
-
+        if (newTestType === calculator.TEST_TYPES.POTENCY ||
+            newTestType === calculator.TEST_TYPES.RESIDUAL) {
+          this.dropOffTime.forEach(function(el) { el.show(); });
+          this.turnAroundTime.forEach(function(el) { el.show(); });
+        }
+        else {
+          this.dropOffTime.forEach(function(el) { el.hide(); });
+          this.turnAroundTime.forEach(function(el) { el.hide(); });
+        }
       }
     };
 
