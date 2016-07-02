@@ -561,6 +561,9 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
      */
     var calculatorBehavior = {
       buttons: {},
+      dropOffDate: [],
+      dropOffTime: [],
+      turnAroundTime: [],
 
       init: function() { 
         for (var testType in calculator.TEST_TYPES) {
@@ -581,6 +584,23 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         e.preventDefault();
         e.stopImmediatePropagation();
 
+        var newTestType = jQuery(e.target).closest('.fusion-button').attr('title');
+
+        this.selectTestType(newTestType);
+
+        // TODO: 
+        // 1) Show/hide steps #3 and #4 as appropriate.
+        // 2) Scroll to step #2.
+      },
+
+      /**
+       * @description Unselect the previously selected test type and select the
+       * new one.
+       * @caveat We duplicate the :hover styles, which is very bad, but we're
+       * working with unsemantic markup and non-reusable styles.
+       */
+      selectTestType: function(newTestType) {
+
         // Unselect the previously selected test type
 
         if (calculator.testType) {
@@ -588,11 +608,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           this.buttons[calculator.testType].find('.fusion-button-text').removeAttr('style');
         }
 
-        // Select the new test type and set the calculator property. Note that
-        // duplicated the :hover styles is bad but we're working with the 
-        // existing non-semantic markup and unextensible styles.
-
-        var newTestType = jQuery(e.target).closest('.fusion-button').attr('title');
+        // Select the new test type.
 
         this.buttons[newTestType].attr('style', [
           'background-color: white',
@@ -605,10 +621,14 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           .attr('style', 'color: black;');
 
         calculator.testType = newTestType;
+      },
 
-        // TODO: 
-        // 1) Show/hide steps #3 and #4 as appropriate.
-        // 2) Scroll to step #2.
+      /**
+       * @todo Show/hide steps 3 and 4 depending on the newly selected test 
+       * type.
+       */
+      toggleSteps: function(newTestType) {
+
       }
     };
 
