@@ -560,8 +560,59 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
      * 
      */
     var calculatorBehavior = {
+      buttons: {},
 
+      init: function() { 
+        for (var testType in calculator.TEST_TYPES) {
+          this.buttons[testType] = jQuery('a.fusion-button[title=' + testType + ']');
+          this.buttons[testType].on(
+            'click', 
+            jQuery.proxy(this.testTypeButton_click, this)
+          );
+        }
+      },
+
+      /**
+       * @description When selecting a test type we first unselect the 
+       * previously selected test type, select the new one, show/hide steps 3
+       * and 4 as appropriate and scroll to the next step.
+       */
+      testTypeButton_click: function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        // Unselect the previously selected test type
+
+        if (calculator.testType) {
+          this.buttons[calculator.testType].removeAttr('style');
+          this.buttons[calculator.testType].find('.fusion-button-text').removeAttr('style');
+        }
+
+        // Select the new test type and set the calculator property. Note that
+        // duplicated the :hover styles is bad but we're working with the 
+        // existing non-semantic markup and unextensible styles.
+
+        var newTestType = jQuery(e.target).closest('.fusion-button').attr('title');
+
+        this.buttons[newTestType].attr('style', [
+          'background-color: white',
+          'border-width: 2px',
+          'border-color: black'
+        ].join(';'));
+
+        this.buttons[newTestType]
+          .find('.fusion-button-text')
+          .attr('style', 'color: black;');
+
+        calculator.testType = newTestType;
+
+        // TODO: 
+        // 1) Show/hide steps #3 and #4 as appropriate.
+        // 2) Scroll to step #2.
+      }
     };
+
+    calculatorBehavior.init();
     </script>
   </body>
 </html>
