@@ -560,15 +560,56 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
      * 
      */
     var calculatorBehavior = {
+
+      // ----------------------------------------------------------------------
+      // Data Members
+      // ----------------------------------------------------------------------
+
       buttons: {},
       dropOffDate: [],
       dropOffTime: [],
       turnAroundTime: [],
 
+
+      // ----------------------------------------------------------------------
+      // Initialization Methods
+      // ----------------------------------------------------------------------
+
       init: function() { 
+        this.addStyles();
+        this.bindEvents();
+        this.getStepElements();
+      },
 
-        // Get test type buttons and bind onclick handlers
+      /**
+       * @description Duplicate the hover styles so we can reuse them when
+       * selecting a button. 
+       */
+      addStyles: function() { 
+        jQuery('body').append([
+          '<style type="text/css">',
+            '.fusion-button.button-1.selected,', 
+            '.fusion-button.button-2.selected,',
+            '.fusion-button.button-3.selected,',
+            '.fusion-button.button-4.selected { ',
+              'background-color: white;',
+              'border-width: 2px;',
+              'border-color: black;',
+            '}',
+            '.fusion-button.button-1.selected .fusion-button-text,',
+            '.fusion-button.button-2.selected .fusion-button-text,',
+            '.fusion-button.button-3.selected .fusion-button-text,',
+            '.fusion-button.button-4.selected .fusion-button-text {',
+              'color: black;',
+            '}',
+          '</style>'
+        ].join(' '));
+      },
 
+      /**
+       * @description Get test type buttons and bind onclick handlers
+       */
+      bindEvents: function() { 
         for (var testType in calculator.TEST_TYPES) {
           this.buttons[testType] = jQuery('a.fusion-button[title=' + testType + ']');
           this.buttons[testType].on(
@@ -576,9 +617,13 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
             jQuery.proxy(this.testTypeButton_click, this)
           );
         }
+      },
 
-        // Get the drop off date (TODO), drop off time and turn around time elements
-
+      /**
+       * @description Get the drop off date (TODO), drop off time and turn 
+       * around time elements
+       */
+      getStepElements: function() { 
         var dropOffTimeActions = jQuery('a[title="BEFORE 10:30AM"]').closest('.fusion-fullwidth');
         var dropOffTimeSeparator = dropOffTimeActions.prev();
         var dropOffTimeHeader = dropOffTimeSeparator.prev();
@@ -595,6 +640,11 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           turnAroundTimeHeader, turnAroundTimeSeparator, turnAroundTimeActions
         );
       },
+
+
+      // ----------------------------------------------------------------------
+      // Event Handlers
+      // ----------------------------------------------------------------------
 
       /**
        * @description When selecting a test type we first unselect the 
@@ -617,33 +667,13 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       /**
        * @description Unselect the previously selected test type and select the
        * new one.
-       * @caveat We duplicate the :hover styles, which is very bad, but we're
-       * working with unsemantic markup and non-reusable styles.
-       * @todo We're going to reuse these selected styles for the other
-       * sections so we might as well add the style tag so we can just add a
-       * selected class to the fusion button...
        */
       selectTestType: function(newTestType) {
-
-        // Unselect the previously selected test type
-
         if (calculator.testType) {
-          this.buttons[calculator.testType].removeAttr('style');
-          this.buttons[calculator.testType].find('.fusion-button-text').removeAttr('style');
+          this.buttons[calculator.testType].removeClass('selected');
         }
 
-        // Select the new test type.
-
-        this.buttons[newTestType].attr('style', [
-          'background-color: white',
-          'border-width: 2px',
-          'border-color: black'
-        ].join(';'));
-
-        this.buttons[newTestType]
-          .find('.fusion-button-text')
-          .attr('style', 'color: black;');
-
+        this.buttons[newTestType].addClass('selected');
         calculator.testType = newTestType;
       },
 
