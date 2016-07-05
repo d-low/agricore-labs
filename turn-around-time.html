@@ -165,7 +165,6 @@ img.emoji {
     var doc = document.documentElement;
     doc.setAttribute('data-useragent', navigator.userAgent);
   </script>
-
   
   </head>
 <body class="page page-id-12525 page-template page-template-100-width page-template-100-width-php fusion-body no-tablet-sticky-header no-mobile-sticky-header no-mobile-slidingbar mobile-logo-pos-left layout-wide-mode menu-text-align-left mobile-menu-design-modern fusion-image-hovers fusion-show-pagination-text">
@@ -254,7 +253,7 @@ img.emoji {
 <div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:10px;"></div></div></div><div class="fusion-section-separator section-separator" style="border-bottom:1px solid #1a80b6;"><div class="divider-candy-arrow bottom" style="top:0px;border-top-color: #1a80b6;"></div><div class="divider-candy bottom" style="bottom:-21px;border-bottom:1px solid #1a80b6;border-left:1px solid #1a80b6;"></div></div><div class="fusion-fullwidth fullwidth-box fusion-fullwidth-5  fusion-parallax-none nonhundred-percent-fullwidth" style="border-color:#eae9e9;border-bottom-width: 0px;border-top-width: 0px;border-bottom-style: solid;border-top-style: solid;padding-bottom:20px;padding-top:20px;padding-left:20px;padding-right:20px;padding-left:20px !important;padding-right:20px !important;background-color:#f8f8f8;"><style type="text/css" scoped="scoped">.fusion-fullwidth-5 {
                             padding-left: 20px !important;
                             padding-right: 20px !important;
-                        }</style><div class="fusion-row"><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:40px;"></div><div class="imageframe-align-center"><span class="fusion-imageframe imageframe-none imageframe-2 hover-type-none"> <img src="http://new.agricorlabs.com/wp-content/uploads/2016/06/21-tooltip-date-picker-ui-design.jpg" alt="" class="img-responsive"width="520" height="420"/></span></div><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:;margin-bottom:20px;"></div></div></div><div class="fusion-fullwidth fullwidth-box fusion-fullwidth-6  fusion-parallax-none nonhundred-percent-fullwidth" style="border-color:#eae9e9;border-bottom-width: 0px;border-top-width: 0px;border-bottom-style: solid;border-top-style: solid;padding-bottom:20px;padding-top:20px;padding-left:20px;padding-right:20px;padding-left:20px !important;padding-right:20px !important;background-color:#1a80b6;"><style type="text/css" scoped="scoped">.fusion-fullwidth-6 {
+                        }</style><div class="fusion-row"><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:40px;"></div><div id="drop-off-date" class="drop-off-date"></div><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:;margin-bottom:20px;"></div></div></div><div class="fusion-fullwidth fullwidth-box fusion-fullwidth-6  fusion-parallax-none nonhundred-percent-fullwidth" style="border-color:#eae9e9;border-bottom-width: 0px;border-top-width: 0px;border-bottom-style: solid;border-top-style: solid;padding-bottom:20px;padding-top:20px;padding-left:20px;padding-right:20px;padding-left:20px !important;padding-right:20px !important;background-color:#1a80b6;"><style type="text/css" scoped="scoped">.fusion-fullwidth-6 {
                             padding-left: 20px !important;
                             padding-right: 20px !important;
                         }</style><div class="fusion-row"><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:;margin-bottom:20px;"></div><p style="text-align: center; font-size: 35px; line-height: 40px;"><span style="color: #ffffff;">Step 3</span></p>
@@ -408,10 +407,13 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
 </script>
 <script type='text/javascript' src='http://new.agricorlabs.com/wp-content/themes/Avada/assets/js/main.min.js?ver=4.0.2' async ></script>
 <script type='text/javascript' src='http://new.agricorlabs.com/wp-includes/js/wp-embed.min.js?ver=4.5.3'></script>
-    
     <!--[if lte IE 8]>
       <script type="text/javascript" src="http://new.agricorlabs.com/wp-content/themes/Avada/assets/js/respond.js"></script>
     <![endif]-->
+    <link href="https://code.jquery.com/ui/1.11.4/themes/excite-bike/jquery-ui.css" rel="stylesheet" type="text/css">
+    <script crossorigin="anonymous"
+            integrity="sha256-tp8VZ4Y9dg702r7D6ynzSavKSwB9zjariSZ4Snurvmw=" 
+            src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script type="text/javascript">
     var calculator = {
       TEST_TYPES: {
@@ -602,6 +604,44 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
             '.fusion-button.button-4.selected .fusion-button-text {',
               'color: black;',
             '}',
+            '.drop-off-date {',
+              'height: 300px;',
+            '}',
+            '.drop-off-date .ui-datepicker {',
+              'margin: 0 auto;',
+              'padding: 0;',
+              'vertical-align: top;',
+            '}',
+            '.drop-off-date .ui-widget-header {',
+              'background-color: #3b4c53;',
+              'background-image: none;',
+              'border: 0 none;',
+              'border-radius: 0;',
+              'color: #98a6af;',
+              'padding: 18px 13px 18px 13px;',
+            '}',
+            '.drop-off-date .ui-widget-header .ui-state-hover {',
+              'background-color: inherit;',
+              'background-image: none;',
+              'border: 0 none;',
+              'cursor: pointer;',
+              'font-weight: normal;',
+            '}',
+            '.drop-off-date .ui-widget-header a {',
+              'color: inherit;',
+            '}',
+            '.drop-off-date .ui-datepicker .ui-datepicker-prev,',
+            '.drop-off-date .ui-datepicker .ui-datepicker-next {',
+              'height: 92%;',
+            '}',
+            '.drop-off-date .ui-widget-header .ui-icon {',
+              'background-image: none;',
+              'font-size: 1.4em;',
+              'height: 1.8em;',
+              'margin-top: -1em;',
+              'text-indent: unset;',
+              'width: 1.8em;',
+            '}',
           '</style>'
         ].join(' '));
       },
@@ -617,6 +657,12 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
             jQuery.proxy(this.testTypeButton_click, this)
           );
         }
+
+        jQuery('#drop-off-date').datepicker({
+          minDate: new Date(),
+          nextText: '&rsaquo;',
+          prevText: '&lsaquo;'
+        });
       },
 
       /**
