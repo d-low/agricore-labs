@@ -584,8 +584,8 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       },
 
       /**
-       * @description Duplicate the hover styles so we can reuse them when
-       * selecting a button. 
+       * @description Add styles dynamically so that only one JS file needs to
+       * be uploaded to the server to support the custom UI elements.
        */
       addStyles: function() { 
         jQuery('body').append([
@@ -608,6 +608,8 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
               'height: 300px;',
             '}',
             '.drop-off-date .ui-datepicker {',
+              'background-color: white;',
+              'border-radius: 0;',
               'margin: 0 auto;',
               'padding: 0;',
               'vertical-align: top;',
@@ -641,6 +643,30 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
               'margin-top: -1em;',
               'text-indent: unset;',
               'width: 1.8em;',
+            '}',
+            '.drop-off-date .ui-datepicker table {',
+              'background-color: inherit;',
+            '}',
+            '.drop-off-date .ui-datepicker th {',
+              'color: #797d86;',
+            '}',
+            '.drop-off-date .ui-datepicker td span, ',
+            '.drop-off-date .ui-datepicker td a {',
+              'text-align: center;',
+            '}',
+            '.drop-off-date .ui-widget-content .ui-state-default {',
+              'background-color: inherit;',
+              'background-image: none;',
+              'color: #a4aaaa;',
+            '}',
+            '.drop-off-date .ui-widget-content .ui-state-active {',
+              'background-color: #00d3aa;',
+              'border-radius: 50%;',
+              'border-color: #00d3aa;',
+              'color: white;',
+            '}',
+            '.drop-off-date .ui-widget-content .ui-state-hover {',
+              'border: 0 none;',
             '}',
           '</style>'
         ].join(' '));
