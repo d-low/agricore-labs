@@ -253,7 +253,20 @@ img.emoji {
 <div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:10px;"></div></div></div><div class="fusion-section-separator section-separator" style="border-bottom:1px solid #1a80b6;"><div class="divider-candy-arrow bottom" style="top:0px;border-top-color: #1a80b6;"></div><div class="divider-candy bottom" style="bottom:-21px;border-bottom:1px solid #1a80b6;border-left:1px solid #1a80b6;"></div></div><div class="fusion-fullwidth fullwidth-box fusion-fullwidth-5  fusion-parallax-none nonhundred-percent-fullwidth" style="border-color:#eae9e9;border-bottom-width: 0px;border-top-width: 0px;border-bottom-style: solid;border-top-style: solid;padding-bottom:20px;padding-top:20px;padding-left:20px;padding-right:20px;padding-left:20px !important;padding-right:20px !important;background-color:#f8f8f8;"><style type="text/css" scoped="scoped">.fusion-fullwidth-5 {
                             padding-left: 20px !important;
                             padding-right: 20px !important;
-                        }</style><div class="fusion-row"><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:40px;"></div><div id="drop-off-date" class="drop-off-date"></div><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:;margin-bottom:20px;"></div></div></div><div class="fusion-fullwidth fullwidth-box fusion-fullwidth-6  fusion-parallax-none nonhundred-percent-fullwidth" style="border-color:#eae9e9;border-bottom-width: 0px;border-top-width: 0px;border-bottom-style: solid;border-top-style: solid;padding-bottom:20px;padding-top:20px;padding-left:20px;padding-right:20px;padding-left:20px !important;padding-right:20px !important;background-color:#1a80b6;"><style type="text/css" scoped="scoped">.fusion-fullwidth-6 {
+                        }</style><div class="fusion-row"><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:40px;"></div>
+
+                        <!-- TODO: Add a place holder element for the jQuery UI Calendar here using this markup -->
+                        <div id="drop-off-date" class="drop-off-date"></div>
+
+                        <!-- TODO: Add a fusion button here. It needs the ID seen below. -->
+                        <div class="fusion-button-wrapper" style="display: block; margin: 0 auto; text-align: center;">
+                            <style type="text/css" scoped="scoped">.fusion-button.button-25 .fusion-button-text,.fusion-button.button-25 i{color:rgba(255,255,255,.8);}.fusion-button.button-25{border-width:0px;border-color:rgba(255,255,255,.8);}.fusion-button.button-25 .fusion-button-icon-divider{border-color:rgba(255,255,255,.8);}.fusion-button.button-25:hover .fusion-button-text,.fusion-button.button-25:hover i,.fusion-button.button-25:focus .fusion-button-text,.fusion-button.button-25:focus i,.fusion-button.button-25:active .fusion-button-text,.fusion-button.button-25:active{color:rgba(255,255,255,.9);}.fusion-button.button-25:hover,.fusion-button.button-25:focus,.fusion-button.button-25:active{border-width:0px;border-color:rgba(255,255,255,.9);}.fusion-button.button-25:hover .fusion-button-icon-divider,.fusion-button.button-25:hover .fusion-button-icon-divider,.fusion-button.button-25:active .fusion-button-icon-divider{border-color:rgba(255,255,255,.9);}.fusion-button.button-25{background:#a0ce4e;}.fusion-button.button-25:hover,.button-25:focus,.fusion-button.button-25:active{background:#96c346;}.fusion-button.button-25{width:auto;}</style>
+                            <a class="fusion-button button-flat button-round button-xlarge button-default button-25" target="_blank" href="javascript:void(0);" id="drop-off-date-apply-button">
+                              <span class="fusion-button-text">Apply</span>
+                            </a>
+                        </div>
+
+                        <div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:;margin-bottom:20px;"></div></div></div><div class="fusion-fullwidth fullwidth-box fusion-fullwidth-6  fusion-parallax-none nonhundred-percent-fullwidth" style="border-color:#eae9e9;border-bottom-width: 0px;border-top-width: 0px;border-bottom-style: solid;border-top-style: solid;padding-bottom:20px;padding-top:20px;padding-left:20px;padding-right:20px;padding-left:20px !important;padding-right:20px !important;background-color:#1a80b6;"><style type="text/css" scoped="scoped">.fusion-fullwidth-6 {
                             padding-left: 20px !important;
                             padding-right: 20px !important;
                         }</style><div class="fusion-row"><div class="fusion-sep-clear"></div><div class="fusion-separator fusion-full-width-sep sep-none" style="border-color:#e0dede;margin-left: auto;margin-right: auto;margin-top:;margin-bottom:20px;"></div><p style="text-align: center; font-size: 35px; line-height: 40px;"><span style="color: #ffffff;">Step 3</span></p>
@@ -424,8 +437,8 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       },
 
       SUBMISSION_TIMES: {
-        AFTER_TEN: 'AFTER_TEN',
-        BEFORE_TEN: 'BEFORE_TEN'
+        'BEFORE 10:30AM': 'BEFORE 10:30AM',
+        'AFTER 10:30AM': 'AFTER 10:30AM'
       },
 
       TURN_AROUND_TIMES: {
@@ -521,24 +534,22 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         }
 
         return canCalculate;
+      },
+
+      canSelectTurnAroundTime: function() { 
+        var canSelect = false;
+
+        if (this.testType === this.TEST_TYPES.POTENCY ||
+            this.testType === this.TEST_TYPES.RESIDUAL) { 
+          canSelect = true;
+        }
+
+        return canSelect;
       }
     };
 
     /** 
      * @description Control UI/UX depending on which type of test is selected. 
-     * The following business rules are enforced:
-     *
-     * 1) When there is only one available turn around time for the selected
-     *    test then hide step 3 by first finding the the anchor with a value of
-     *    "BEFORE 10:30AM" for the title, then find its parent element with the
-     *    fusion-fullwidth class, the parent's previous fusion-section-separator
-     *    and its previous fusion-full-width element; and hide the parent, the 
-     *    adjacent fusion-section-separateor and its previous fusion-full-width
-     *    elenent. This is *VERY* brittle, but in liue of rewriting the page to
-     *    be semantic and reusing or mocking the fusion styles, this is the
-     *    only way to hide step 3 and stp 4 for Microbial and Pesticide tests.
-     *  
-     * 
      */
     var calculatorBehavior = {
 
@@ -546,10 +557,11 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       // Data Members
       // ----------------------------------------------------------------------
 
-      buttons: {},
+      testTypeButtons: {},
       dropOffDate: [],
       dropOffTime: [],
       turnAroundTime: [],
+      submissionTimeButtons: {},
 
 
       // ----------------------------------------------------------------------
@@ -656,8 +668,8 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
        */
       bindEvents: function() { 
         for (var testType in calculator.TEST_TYPES) {
-          this.buttons[testType] = jQuery('a.fusion-button[title=' + testType + ']');
-          this.buttons[testType].on(
+          this.testTypeButtons[testType] = jQuery('a.fusion-button[title=' + testType + ']');
+          this.testTypeButtons[testType].on(
             'click', 
             jQuery.proxy(this.testTypeButton_click, this)
           );
@@ -668,13 +680,36 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           nextText: '&rsaquo;',
           prevText: '&lsaquo;'
         });
+
+        jQuery('#drop-off-date-apply-button').on(
+          'click', 
+          jQuery.proxy(this.dropOffDateApplyButton_click, this)
+        );
+
+        for (var submissionTime in calculator.SUBMISSION_TIMES) {
+          this.submissionTimeButtons[submissionTime] = jQuery(
+            'a.fusion-button[title="' + submissionTime + '"]'
+          );
+          this.submissionTimeButtons[submissionTime].on(
+            'click', 
+            jQuery.proxy(this.submissionTimeButton_click, this)
+          );
+        }
       },
 
       /**
-       * @description Get the drop off date (TODO), drop off time and turn 
-       * around time elements
+       * @description Get the drop off date, drop off time and turn around time
+       * elements
        */
       getStepElements: function() { 
+        var dropOffDateActions = jQuery('#drop-off-date').closest('.fusion-fullwidth');
+        var dropOffDateSeparator = dropOffDateActions.prev();
+        var dropOffDateHeader = dropOffDateSeparator.prev();
+
+        this.dropOffDate.push(
+          dropOffDateHeader, dropOffDateSeparator, dropOffDateActions
+        );
+
         var dropOffTimeActions = jQuery('a[title="BEFORE 10:30AM"]').closest('.fusion-fullwidth');
         var dropOffTimeSeparator = dropOffTimeActions.prev();
         var dropOffTimeHeader = dropOffTimeSeparator.prev();
@@ -709,10 +744,8 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         var newTestType = jQuery(e.target).closest('.fusion-button').attr('title');
 
         this.selectTestType(newTestType);
-        this.toggleSteps(newTestType);
-
-        // TODO: 
-        // 2) Scroll to step #2.
+        this.toggleSteps();
+        this.scrollToEl(this.dropOffDate[0]);
       },
 
       /**
@@ -721,27 +754,126 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
        */
       selectTestType: function(newTestType) {
         if (calculator.testType) {
-          this.buttons[calculator.testType].removeClass('selected');
+          this.testTypeButtons[calculator.testType].removeClass('selected');
         }
 
-        this.buttons[newTestType].addClass('selected');
+        this.testTypeButtons[newTestType].addClass('selected');
         calculator.testType = newTestType;
       },
 
       /**
-       * @todo Show/hide steps 3 and 4 depending on the newly selected test 
-       * type.
+       * @todo Show/hide step 4 depending on the selected test type.
        */
-      toggleSteps: function(newTestType) {
-        if (newTestType === calculator.TEST_TYPES.POTENCY ||
-            newTestType === calculator.TEST_TYPES.RESIDUAL) {
-          this.dropOffTime.forEach(function(el) { el.show(); });
+      toggleSteps: function() {
+        if (calculator.canSelectTurnAroundTime()) {
           this.turnAroundTime.forEach(function(el) { el.show(); });
         }
         else {
-          this.dropOffTime.forEach(function(el) { el.hide(); });
           this.turnAroundTime.forEach(function(el) { el.hide(); });
         }
+      },
+
+      dropOffDateApplyButton_click: function(e) { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        calculator.dropOffDate = jQuery('#drop-off-date').datepicker('getDate');
+        this.scrollToEl(this.dropOffTime[0]);
+      },
+
+      submissionTimeButton_click: function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var newSubmissionTime = jQuery(e.target).closest('.fusion-button').attr('title');
+          
+        this.selectSubmissionTime(newSubmissionTime);
+        
+        if (calculator.canSelectTurnAroundTime()) {
+          this.scrollToEl(this.turnAroundTime[0]);
+        }
+        else {
+          // TODO: Show turn around time for selected test type, drop off date
+          // and submission time...
+        }
+      },
+
+      selectSubmissionTime: function(newSubmissionTime) {
+        if (calculator.submissionTime) {
+          this.submissionTimeButtons[calculator.submissionTime].removeClass('selected');
+        }
+
+        this.submissionTimeButtons[newSubmissionTime].addClass('selected');
+        calculator.submissionTime = newSubmissionTime;
+      },
+
+
+      // ----------------------------------------------------------------------
+      // Miscellaneous Methods
+      // ----------------------------------------------------------------------
+
+      /** 
+       * @description Scroll to requested element using an easing transition 
+       * and request animation frame.
+       * @param el The element on the page to scroll to.
+       * @param duration Optional animation duration in seconds
+       * @see http://stackoverflow.com/questions/8917921/cross-browser-javascript-not-jquery-scroll-to-top-animation#26808520
+       * @see https://github.com/danro/easing-js/blob/master/easing.js
+       */
+      scrollToEl: function(el, duration) {   
+        var currentTime = 0;
+        var easingEquations = {
+          easeOutSine: function(pos) {
+            return Math.sin(pos * (Math.PI / 2));
+          },
+          easeInOutSine: function(pos) {
+            return (-0.5 * (Math.cos(Math.PI * pos) - 1));
+          },
+          easeInOutQuint: function(pos) {
+            if ((pos /= 0.5) < 1) {
+              return 0.5 * Math.pow(pos, 5);
+            }
+
+            return 0.5 * (Math.pow((pos - 2), 5) + 2);
+          }
+        };
+        var fusionHeaderWrapper = jQuery('.fusion-header-wrapper');
+        var scrollTargetY = el.offset().top;
+        var scrollY = window.pageYOffset;   
+
+        // TODO: There is an edge case where if we're at the top of the page
+        // the header is not yet sticky then the fusion-is-sticky class won't
+        // yet be applied so we won't end up scrolling to the properly location
+        // because the fusion-is-sticky class will be added after we animate
+        // the scroll position here. A good way to work around this would be to
+        // check to see if the fusion-is-sticky class is present 100px into the
+        // scroll and if so recalculate the scrollTargetY then! 
+        
+        if (fusionHeaderWrapper.is('.fusion-is-sticky')) {
+          scrollTargetY = scrollTargetY - jQuery('.fusion-header').height();
+        }
+
+        scrollTargetY = typeof scrollTargetY === 'undefined' ? 0 : scrollTargetY;
+        duration = duration || 0.5;
+
+        // add animation loop
+        function tick() {
+          currentTime += 1 / 60;
+
+          var p = currentTime / duration;
+          var t = easingEquations['easeOutSine'](p);
+
+          if (p < 1) {
+            window.requestAnimationFrame(tick);
+            window.scrollTo(0, scrollY + ((scrollTargetY - scrollY) * t));
+          } 
+          else {
+            window.scrollTo(0, scrollTargetY);
+          }
+        }
+
+        // call it once to get started
+        tick();
       }
     };
 
