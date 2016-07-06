@@ -431,9 +431,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       TURN_AROUND_TIMES: {
         SAME_DAY: 'SAME DAY',
         ONE_DAY: 'ONE DAY',
-        TWO_DAY: 'TWO DAY',
-        FOUR_DAY: 'FOUR DAY',
-        FIVE_DAY: 'FIVE_DAY'
+        TWO_DAY: 'TWO DAY'
       },
 
       TEST_TYPE_DURATION: {
@@ -441,25 +439,6 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         PESTICIDES: 5, 
         POTENCY: 2,
         RESIDUAL: 2
-      },
-
-      AVAILABLE_TURN_AROUND_TIMES: {
-        MICROBIAL: [
-          'FOUR_DAY'
-        ],
-        PESTICIDES: [
-          'FIVE_DAY',
-        ], 
-        POTENCY: [
-          'SAME_DAY',
-          'ONE_DAY',
-          'TWO_DAY'
-        ],
-        RESIDUAL: [
-          'SAME_DAY',
-          'ONE_DAY',
-          'TWO_DAY'
-        ]
       },
 
       testType: null,
@@ -474,7 +453,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           return;
         }
 
-        if (!this.expeditedTurnAroundTime) {
+        if (!this.turnAroundTime) {
           
           // If no expedited turn around time was selected then simply add the
           // test type duration to our current time.
@@ -529,7 +508,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         else if (this.turnAroundTime &&
                  Object.keys(
                   this.TURN_AROUND_TIMES
-                 ).indexOf(this.expeditedTurnAroundTime) === -1) {
+                 ).indexOf(this.turnAroundTime) === -1) {
           errorMesg = 'Please specify a turn around time.';
         }
 
