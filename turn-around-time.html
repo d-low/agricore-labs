@@ -442,9 +442,9 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       },
 
       TURN_AROUND_TIMES: {
-        SAME_DAY: 'SAME DAY',
-        ONE_DAY: 'ONE DAY',
-        TWO_DAY: 'TWO DAY'
+        'SAME DAY': 'SAME DAY',
+        'ONE DAY': 'ONE DAY',
+        'TWO DAY': 'TWO DAY'
       },
 
       TEST_TYPE_DURATION: {
@@ -452,6 +452,12 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         PESTICIDES: 5, 
         POTENCY: 2,
         RESIDUAL: 2
+      },
+
+      TURN_AROUND_TIME_DURATION: {
+        'SAME DAY': 0,
+        'ONE DAY': 1,
+        'TWO DAY': 2
       },
 
       testType: null,
@@ -466,16 +472,17 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           return;
         }
 
-        if (!this.turnAroundTime) {
-          
-          // If no expedited turn around time was selected then simply add the
-          // test type duration to our current time.
+        // If no expedited turn around time was selected then simply add the
+        // test type duration to our current time. Otherwise add the turn
+        // around time duration to the drop off date.
 
+        if (!this.turnAroundTime) {
           resultsDate = this.dropOffDate.getTime() + 
                         (this.TEST_TYPE_DURATION[this.testType] * 86400000);
         }
         else {
-          // TBD: Use expedited time
+          resultsDate = this.dropOffDate.getTime() + 
+                        (this.TURN_AROUND_TIME_DURATION[this.turnAroundTime] * 86400000);
         }
 
         // Convert the result date from milliseconds since the epoch to a date
@@ -485,10 +492,22 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
 
         // If the result date falls on a weekend then the result date will be the
         // following Monday. 
-        // TBD: But what if the following Monday is a holiday? Do we need to 
-        // include a more robust date library like moment.js and include holiday 
-        // plug-ins? Maybe we just hard code a few years of holidays here
-        // instead...
+    
+        if (resultsDate.getDay() === 0) { 
+          resultsDate = new Date(resultsDate.getTime() + 86400000);
+        }
+        else if (resultsDate.getDay() === 6) { 
+          resultsDate = new Date(resultsDate.getTime() + (2 * 86400000));
+        }
+
+        // Add a day if the submission time is after 10:30am
+
+        if (this.submissionTime === this.SUBMISSION_TIMES['AFTER 10:30AM']) {
+          resultsDate = new Date(resultsDate.getTime() + 86400000);
+        }
+
+        // After potentially adding a day, again if the result date falls on a
+        // weekend then the result date will be the following Monday. 
     
         if (resultsDate.getDay() === 0) { 
           resultsDate = new Date(resultsDate.getTime() + 86400000);
@@ -556,12 +575,14 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       // ----------------------------------------------------------------------
       // Data Members
       // ----------------------------------------------------------------------
-
-      testTypeButtons: {},
+      
       dropOffDate: [],
       dropOffTime: [],
       turnAroundTime: [],
+      enter: [],
+      testTypeButtons: {},
       submissionTimeButtons: {},
+      turnAroundTimeButtons: {},
 
 
       // ----------------------------------------------------------------------
@@ -581,18 +602,12 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       addStyles: function() { 
         jQuery('body').append([
           '<style type="text/css">',
-            '.fusion-button.button-1.selected,', 
-            '.fusion-button.button-2.selected,',
-            '.fusion-button.button-3.selected,',
-            '.fusion-button.button-4.selected { ',
+            '.fusion-button.selected { ',
               'background-color: white;',
               'border-width: 2px;',
               'border-color: black;',
             '}',
-            '.fusion-button.button-1.selected .fusion-button-text,',
-            '.fusion-button.button-2.selected .fusion-button-text,',
-            '.fusion-button.button-3.selected .fusion-button-text,',
-            '.fusion-button.button-4.selected .fusion-button-text {',
+            '.fusion-button.selected .fusion-button-text {',
               'color: black;',
             '}',
             '.drop-off-date {',
@@ -695,6 +710,18 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
             jQuery.proxy(this.submissionTimeButton_click, this)
           );
         }
+
+        for (var turnAroundTime in calculator.TURN_AROUND_TIMES) {
+          this.turnAroundTimeButtons[turnAroundTime] = jQuery(
+            'a.fusion-button[title="' + turnAroundTime + '"]'
+          );
+          this.turnAroundTimeButtons[turnAroundTime].on(
+            'click', 
+            jQuery.proxy(this.turnAroundTimeButton_click, this)
+          );
+        }
+
+        jQuery('a[title="ENTER"]').on('click', jQuery.proxy(this.enter_click, this));
       },
 
       /**
@@ -724,6 +751,14 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
 
         this.turnAroundTime.push(
           turnAroundTimeHeader, turnAroundTimeSeparator, turnAroundTimeActions
+        );
+
+        var enterActions = jQuery('a[title="ENTER"]').closest('.fusion-fullwidth');
+        var enterSeparator = enterActions.prev();
+        var enterHeader = enterSeparator.prev();
+
+        this.enter.push(
+          enterActions, enterSeparator, enterHeader
         );
       },
 
@@ -770,6 +805,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         }
         else {
           this.turnAroundTime.forEach(function(el) { el.hide(); });
+          calculator.turnAroundTime = null;
         }
       },
 
@@ -793,8 +829,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           this.scrollToEl(this.turnAroundTime[0]);
         }
         else {
-          // TODO: Show turn around time for selected test type, drop off date
-          // and submission time...
+          this.scrollToEl(this.enter[0]);
         }
       },
 
@@ -805,6 +840,47 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
 
         this.submissionTimeButtons[newSubmissionTime].addClass('selected');
         calculator.submissionTime = newSubmissionTime;
+      },
+
+      turnAroundTimeButton_click: function(e) { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var newTurnAroundTime = jQuery(e.target).closest('.fusion-button').attr('title');
+          
+        this.selectTurnAroundTime(newTurnAroundTime);
+
+        this.scrollToEl(this.enter[0]);
+      },
+
+      selectTurnAroundTime: function(newTurnAroundTime) {
+        if (calculator.turnAroundTime) {
+          this.turnAroundTimeButtons[calculator.turnAroundTime].removeClass('selected');
+        }
+
+        this.turnAroundTimeButtons[newTurnAroundTime].addClass('selected');
+        calculator.turnAroundTime = newTurnAroundTime;
+      },
+
+      enter_click: function(e) {
+        var header = jQuery('.turn-time p:first span');
+        var body = jQuery('.turn-time p:last span');
+
+        try { 
+          var readyOnDate = calculator.calculate();
+
+          header.html('Your expected turn-time');
+          body.html([
+            'Your',
+            calculator.testType.toLowerCase(), 
+            'results will be available on',
+            jQuery.datepicker.formatDate('DD MM d, yy', readyOnDate) + '.'
+          ].join(' '));
+        }
+        catch (exp) {
+          header.html('Error calculating turn-time!');
+          body.html(exp.message);
+        }
       },
 
 
