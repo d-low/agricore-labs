@@ -444,76 +444,182 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       TURN_AROUND_TIMES: {
         'SAME DAY': 'SAME DAY',
         'ONE DAY': 'ONE DAY',
-        'TWO DAY': 'TWO DAY'
+        'TWO DAY': 'TWO DAY',
+        'FOUR DAY': 'FOUR DAY'
       },
 
-      TEST_TYPE_DURATION: {
-        MICROBIAL: 4,
-        PESTICIDES: 5, 
-        POTENCY: 2,
-        RESIDUAL: 2
-      },
+      PICKUP_DAY: {
+        'MICROBIAL': {
+          'BEFORE 10:30AM': {
+            1: {
+              'FOUR DAY' : 4
+            }, 
+            2: {
+              'FOUR DAY' : 5
+            },
+            3: {
+              'FOUR DAY' : 6
+            },
+            4: {
+              'FOUR DAY' : 0
+            },
+            5: {
+              'FOUR DAY' : 1
+            }
+          }, // end MICROBIAL - BEFORE 10:30AM
+          'AFTER 10:30AM': {
+            1: {
+              'FOUR DAY' : 5
+            }, 
+            2: {
+              'FOUR DAY' : 6
+            },
+            3: {
+              'FOUR DAY' : 0
+            },
+            4: {
+              'FOUR DAY' : 1
+            },
+            5: {
+              'FOUR DAY' : 2
+            }
+          }, // end MICROBIAL - AFTER 10:30AM
+        }, // end MICROBIAL
+        'PESTICIDES': {
+           // TODO: Pesticide testing is not yet available!
+        },
+        'POTENCY': {
+          'BEFORE 10:30AM': {
+            1: {
+              'TWO DAY' : 3,
+              'ONE DAY' : 2,
+              'SAME DAY': 1
+            }, 
+            2: {
+              'TWO DAY' : 4,
+              'ONE DAY' : 3,
+              'SAME DAY': 2
+            },
+            3: {
+              'TWO DAY' : 5,
+              'ONE DAY' : 4,
+              'SAME DAY': 3
+            },
+            4: {
+              'TWO DAY' : 1,
+              'ONE DAY' : 5,
+              'SAME DAY': 4
+            },
+            5: {
+              'TWO DAY' : 2,
+              'ONE DAY' : 1,
+              'SAME DAY': 5
+            }
+          }, // end POTENCY - BEFORE 10:30AM
+          'AFTER 10:30AM': {
+            1: {
+              'TWO DAY' : 4,
+              'ONE DAY' : 3,
+              'SAME DAY': 2
+            }, 
+            2: {
+              'TWO DAY' : 5,
+              'ONE DAY' : 4,
+              'SAME DAY': 3
+            },
+            3: {
+              'TWO DAY' : 1,
+              'ONE DAY' : 5,
+              'SAME DAY': 4
+            },
+            4: {
+              'TWO DAY' : 2,
+              'ONE DAY' : 1,
+              'SAME DAY': 5
+            },
+            5: {
+              'TWO DAY' : 3,
+              'ONE DAY' : 2,
+              'SAME DAY': 1
+            }
+          }, // end POTENCY - AFTER 10:30AM
 
-      TURN_AROUND_TIME_DURATION: {
-        'SAME DAY': 0,
-        'ONE DAY': 1,
-        'TWO DAY': 2
-      },
+        }, // end POTENCY
+        'RESIDUAL': {
+          'BEFORE 10:30AM': {
+            1: {
+              'TWO DAY' : 3,
+              'ONE DAY' : 2
+            }, 
+            2: {
+              'TWO DAY' : 4,
+              'ONE DAY' : 3
+            },
+            3: {
+              'TWO DAY' : 5,
+              'ONE DAY' : 4
+            },
+            4: {
+              'TWO DAY' : 1,
+              'ONE DAY' : 5
+            },
+            5: {
+              'TWO DAY' : 2,
+              'ONE DAY' : 1
+            }
+          }, // end RESIDUAL - BEFORE 10:30AM
+          'AFTER 10:30AM': {
+            1: {
+              'TWO DAY' : 4,
+              'ONE DAY' : 3
+            }, 
+            2: {
+              'TWO DAY' : 5,
+              'ONE DAY' : 4
+            },
+            3: {
+              'TWO DAY' : 1,
+              'ONE DAY' : 5
+            },
+            4: {
+              'TWO DAY' : 2,
+              'ONE DAY' : 1
+            },
+            5: {
+              'TWO DAY' : 3,
+              'ONE DAY' : 2
+            }
+          }, // end RESIDUAL - AFTER 10:30AM
+        } // end RESIDUAL
+      }, // end PICKUP_DAY lookup table
 
       testType: null,
       dropOffDate: null,
       submissionTime: null,
       turnAroundTime: null,
-      
-      calculate: function() { 
-        var resultsDate = null;
 
+      /**
+       * @description Use pickup day look up table to find the day of the week
+       * that the test will be ready. If the day of the week that the test will
+       * be ready is less than the current day of the week then it'll be ready 
+       * next week.
+       */
+      calculate: function() { 
         if (!this.canCalculate(true)) {
           return;
         }
 
-        // If no expedited turn around time was selected then simply add the
-        // test type duration to our current time. Otherwise add the turn
-        // around time duration to the drop off date.
-
-        if (!this.turnAroundTime) {
-          resultsDate = this.dropOffDate.getTime() + 
-                        (this.TEST_TYPE_DURATION[this.testType] * 86400000);
+        var resultsDate = null;
+        var dropOffDayOfWeek = this.dropOffDate.getDay();
+        var pickUpDay = this.PICKUP_DAY[this.testType][this.submissionTime][dropOffDayOfWeek][this.turnAroundTime];
+        
+        if (pickUpDay < dropOffDayOfWeek) {
+          resultsDate = this.getNextDayOfWeek(this.dropOffDate, pickUpDay);
         }
         else {
-          resultsDate = this.dropOffDate.getTime() + 
-                        (this.TURN_AROUND_TIME_DURATION[this.turnAroundTime] * 86400000);
-        }
-
-        // Convert the result date from milliseconds since the epoch to a date
-        // object.
-
-        resultsDate = new Date(resultsDate);
-
-        // If the result date falls on a weekend then the result date will be the
-        // following Monday. 
-    
-        if (resultsDate.getDay() === 0) { 
-          resultsDate = new Date(resultsDate.getTime() + 86400000);
-        }
-        else if (resultsDate.getDay() === 6) { 
-          resultsDate = new Date(resultsDate.getTime() + (2 * 86400000));
-        }
-
-        // Add a day if the submission time is after 10:30am
-
-        if (this.submissionTime === this.SUBMISSION_TIMES['AFTER 10:30AM']) {
-          resultsDate = new Date(resultsDate.getTime() + 86400000);
-        }
-
-        // After potentially adding a day, again if the result date falls on a
-        // weekend then the result date will be the following Monday. 
-    
-        if (resultsDate.getDay() === 0) { 
-          resultsDate = new Date(resultsDate.getTime() + 86400000);
-        }
-        else if (resultsDate.getDay() === 6) { 
-          resultsDate = new Date(resultsDate.getTime() + (2 * 86400000));
+          resultsDate =  new Date(
+            this.dropOffDate.getTime() + ((pickUpDay - dropOffDayOfWeek) * 86400000)
+          );
         }
         
         return resultsDate;
@@ -564,6 +670,15 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         }
 
         return canSelect;
+      },
+
+      /**
+       * @see http://codereview.stackexchange.com/questions/33527/find-next-occurring-friday-or-any-dayofweek
+       */
+      getNextDayOfWeek: function(date, dayOfWeek) {
+        var resultDate = new Date(date.getTime());
+        resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
+        return resultDate;
       }
     };
 
@@ -804,7 +919,13 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         }
         else {
           this.turnAroundTime.forEach(function(el) { el.hide(); });
-          calculator.turnAroundTime = null;
+
+          if (calculator.testType === calculator.TEST_TYPES.MICROBIAL) {
+            calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['FOUR DAY'];
+          }
+          else {
+            calculator.turnAroundTime = null;
+          }
         }
       },
 
