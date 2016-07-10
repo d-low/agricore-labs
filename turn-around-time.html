@@ -881,6 +881,12 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         var newTestType = jQuery(e.target).closest('.fusion-button').attr('title');
 
         this.selectTestType(newTestType);
+
+        if (newTestType === calculator.TEST_TYPES.PESTICIDES) {
+          this.showPesticidesDialog();
+          return;
+        }
+
         this.toggleSteps();
         this.scrollToEl(this.dropOffDate[0]);
       },
@@ -969,6 +975,18 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         calculator.turnAroundTime = newTurnAroundTime;
       },
 
+      showPesticidesDialog: function() { 
+        this.enterButton.one('click', function(e) { 
+          var header = jQuery('.turn-time p:first span');
+          var body = jQuery('.turn-time p:last span');
+
+          header.html('Coming Soon');
+          body.html('Pesticide testing is not yet available.');
+        });
+
+        this.enterButton.trigger('click');
+      },
+
       showPickUpDate: function() {
         this.enterButton.trigger('click');
       },
@@ -976,6 +994,10 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       enter_click: function() {
         var header = jQuery('.turn-time p:first span');
         var body = jQuery('.turn-time p:last span');
+
+        if (calculator.testType === calculator.TEST_TYPES.PESTICIDES) {
+          return;
+        }
 
         try { 
           var readyOnDate = calculator.calculate();
