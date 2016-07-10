@@ -690,6 +690,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       testTypeButtons: {},
       submissionTimeButtons: {},
       turnAroundTimeButtons: {},
+      enterButton: null,
 
 
       // ----------------------------------------------------------------------
@@ -824,7 +825,8 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           );
         }
 
-        jQuery('a[title="ENTER"]').on('click', jQuery.proxy(this.enter_click, this));
+        this.enterButton = jQuery('a[title="ENTER"]');
+        this.enterButton.on('click', jQuery.proxy(this.enter_click, this));
       },
 
       /**
@@ -863,6 +865,10 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         this.enter.push(
           enterActions, enterSeparator, enterHeader
         );
+
+        this.enter.forEach(function(el) { 
+          el.hide();
+        });
       },
 
 
@@ -935,7 +941,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           this.scrollToEl(this.turnAroundTime[0]);
         }
         else {
-          this.scrollToEl(this.enter[0]);
+          this.showPickUpDate();
         }
       },
 
@@ -955,8 +961,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         var newTurnAroundTime = jQuery(e.target).closest('.fusion-button').attr('title');
           
         this.selectTurnAroundTime(newTurnAroundTime);
-
-        this.scrollToEl(this.enter[0]);
+        this.showPickUpDate();
       },
 
       selectTurnAroundTime: function(newTurnAroundTime) {
@@ -968,7 +973,11 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
         calculator.turnAroundTime = newTurnAroundTime;
       },
 
-      enter_click: function(e) {
+      showPickUpDate: function() {
+        this.enterButton.trigger('click');
+      },
+
+      enter_click: function() {
         var header = jQuery('.turn-time p:first span');
         var body = jQuery('.turn-time p:last span');
 
