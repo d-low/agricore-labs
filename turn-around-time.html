@@ -654,14 +654,7 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
       },
 
       canSelectTurnAroundTime: function() { 
-        var canSelect = false;
-
-        if (this.testType === this.TEST_TYPES.POTENCY ||
-            this.testType === this.TEST_TYPES.RESIDUAL) { 
-          canSelect = true;
-        }
-
-        return canSelect;
+        return this.testType === this.TEST_TYPES.POTENCY;
       },
 
       /**
@@ -917,6 +910,9 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
 
           if (calculator.testType === calculator.TEST_TYPES.MICROBIAL) {
             calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['FOUR DAY'];
+          }
+          else if (calculator.testType === calculator.TEST_TYPES.RESIDUAL) {
+            calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['TWO DAY'];
           }
           else {
             calculator.turnAroundTime = null;
