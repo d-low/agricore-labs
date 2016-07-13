@@ -795,7 +795,9 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           beforeShowDay: jQuery.datepicker.noWeekends,
           nextText: '&rsaquo;',
           onSelect: jQuery.proxy(this.dropOffDate_select, this),
-          prevText: '&lsaquo;'
+          prevText: '&lsaquo;',
+          showOtherMonths: true,
+          selectOtherMonths: true
         });
 
         for (var submissionTime in calculator.SUBMISSION_TIMES) {
