@@ -775,6 +775,11 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
             '.drop-off-date .ui-widget-content .ui-state-hover {',
               'border: 0 none;',
             '}',
+            '.pick-up-date {',
+              'color: #1a80b6;',
+              'font-size: calc(100% + 2pt);',
+              'font-weight: bold;',
+            '}',
           '</style>'
         ].join(' '));
       },
@@ -1008,8 +1013,11 @@ var js_local_vars = {"admin_ajax":"http:\/\/new.agricorlabs.com\/wp-admin\/admin
           body.html([
             'Your',
             calculator.testType.toLowerCase(), 
-            'results will be available on',
-            jQuery.datepicker.formatDate('DD MM d, yy', readyOnDate) + '.'
+            'results will be available by the end of the day on:',
+            '<br />',
+            '<strong class="pick-up-date">',
+              jQuery.datepicker.formatDate('DD MM d, yy', readyOnDate),
+            '</strong>'
           ].join(' '));
         }
         catch (exp) {
