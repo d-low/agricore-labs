@@ -269,9 +269,11 @@ var calculatorBehavior = {
   // ----------------------------------------------------------------------
 
   init: function() { 
-    this.addStyles();
-    this.bindEvents();
-    this.getStepElements();
+    if (window.location.href.match('turn-around-time')) {
+      this.addStyles();
+      this.bindEvents();
+      this.getStepElements();
+    }
   },
 
   /**
@@ -677,3 +679,4 @@ var calculatorBehavior = {
 jQuery(document).ready(function() {
   calculatorBehavior.init();
 });
+  
