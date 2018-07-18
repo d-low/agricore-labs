@@ -56,8 +56,61 @@ var calculator = {
       }, // end MICROBIAL - AFTER 10:30AM
     }, // end MICROBIAL
     'PESTICIDES': {
-       // TODO: Pesticide testing is not yet available!
-    },
+      'BEFORE 10:30AM': {
+        1: {
+          'TWO DAY' : 3,
+          'NEXT DAY' : 2,
+          'SAME DAY': 1
+        }, 
+        2: {
+          'TWO DAY' : 4,
+          'NEXT DAY' : 3,
+          'SAME DAY': 2
+        },
+        3: {
+          'TWO DAY' : 5,
+          'NEXT DAY' : 4,
+          'SAME DAY': 3
+        },
+        4: {
+          'TWO DAY' : 1,
+          'NEXT DAY' : 5,
+          'SAME DAY': 4
+        },
+        5: {
+          'TWO DAY' : 2,
+          'NEXT DAY' : 1,
+          'SAME DAY': 5
+        }
+      }, // end PESTICIDES - BEFORE 10:30AM
+      'AFTER 10:30AM': {
+        1: {
+          'TWO DAY' : 4,
+          'NEXT DAY' : 3,
+          'SAME DAY': 2
+        }, 
+        2: {
+          'TWO DAY' : 5,
+          'NEXT DAY' : 4,
+          'SAME DAY': 3
+        },
+        3: {
+          'TWO DAY' : 1,
+          'NEXT DAY' : 5,
+          'SAME DAY': 4
+        },
+        4: {
+          'TWO DAY' : 2,
+          'NEXT DAY' : 1,
+          'SAME DAY': 5
+        },
+        5: {
+          'TWO DAY' : 3,
+          'NEXT DAY' : 2,
+          'SAME DAY': 1
+        }
+      }, // end PESTICIDES - AFTER 10:30AM
+    }, // end PESTICIDES
     'POTENCY': {
       'BEFORE 10:30AM': {
         1: {
@@ -232,7 +285,7 @@ var calculator = {
   },
 
   canSelectTurnAroundTime: function() { 
-    return this.testType === this.TEST_TYPES.POTENCY;
+    return (this.testType === this.TEST_TYPES.POTENCY || this.testType === this.TEST_TYPES.PESTICIDES);
   },
 
   /**
@@ -469,11 +522,6 @@ var calculatorBehavior = {
 
     this.selectTestType(newTestType);
 
-    if (newTestType === calculator.TEST_TYPES.PESTICIDES) {
-      this.showPesticidesDialog();
-      return;
-    }
-
     this.toggleSteps();
     this.scrollToEl(this.dropOffDate[0]);
   },
@@ -562,18 +610,6 @@ var calculatorBehavior = {
     calculator.turnAroundTime = newTurnAroundTime;
   },
 
-  showPesticidesDialog: function() { 
-    this.enterButton.one('click', function(e) { 
-      var header = jQuery('.turn-time p:first span');
-      var body = jQuery('.turn-time p:last span');
-
-      header.html('Coming Soon');
-      body.html('Pesticide testing is not yet available.');
-    });
-
-    this.enterButton.trigger('click');
-  },
-
   showPickUpDate: function() {
     this.enterButton.trigger('click');
   },
@@ -581,10 +617,6 @@ var calculatorBehavior = {
   enter_click: function() {
     var header = jQuery('.turn-time p:first span');
     var body = jQuery('.turn-time p:last span');
-
-    if (calculator.testType === calculator.TEST_TYPES.PESTICIDES) {
-      return;
-    }
 
     try { 
       var readyOnDate = calculator.calculate();
