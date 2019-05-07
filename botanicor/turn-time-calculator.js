@@ -331,7 +331,7 @@ var calculatorBehavior = {
     if (window.location.href.match('turn-time-calculator')) {
       this.addStyles();
       this.bindEvents();
-      // this.getStepElements();
+      this.getStepElements();
     }
   },
 
@@ -349,70 +349,72 @@ var calculatorBehavior = {
         '.nectar-button.selected span {',
           'color: white;',
         '}',
-        // '.drop-off-date {',
-        //   'height: 300px;',
-        // '}',
-        // '.drop-off-date .ui-datepicker {',
-        //   'background-color: white;',
-        //   'border-radius: 0;',
-        //   'margin: 0 auto;',
-        //   'padding: 0;',
-        //   'vertical-align: top;',
-        // '}',
-        // '.drop-off-date .ui-widget-header {',
-        //   'background-color: #3b4c53;',
-        //   'background-image: none;',
-        //   'border: 0 none;',
-        //   'border-radius: 0;',
-        //   'color: #98a6af;',
-        //   'padding: 18px 13px 18px 13px;',
-        // '}',
-        // '.drop-off-date .ui-widget-header .ui-state-hover {',
-        //   'background-color: inherit;',
-        //   'background-image: none;',
-        //   'border: 0 none;',
-        //   'cursor: pointer;',
-        //   'font-weight: normal;',
-        // '}',
-        // '.drop-off-date .ui-widget-header a {',
-        //   'color: inherit;',
-        // '}',
-        // '.drop-off-date .ui-datepicker .ui-datepicker-prev,',
-        // '.drop-off-date .ui-datepicker .ui-datepicker-next {',
-        //   'height: 92%;',
-        // '}',
-        // '.drop-off-date .ui-widget-header .ui-icon {',
-        //   'background-image: none;',
-        //   'font-size: 1.4em;',
-        //   'height: 1.8em;',
-        //   'margin-top: -1em;',
-        //   'text-indent: unset;',
-        //   'width: 1.8em;',
-        // '}',
-        // '.drop-off-date .ui-datepicker table {',
-        //   'background-color: inherit;',
-        // '}',
-        // '.drop-off-date .ui-datepicker th {',
-        //   'color: #797d86;',
-        // '}',
-        // '.drop-off-date .ui-datepicker td span, ',
-        // '.drop-off-date .ui-datepicker td a {',
-        //   'text-align: center;',
-        // '}',
-        // '.drop-off-date .ui-widget-content .ui-state-default {',
-        //   'background-color: inherit;',
-        //   'background-image: none;',
-        //   'color: #a4aaaa;',
-        // '}',
-        // '.drop-off-date .ui-widget-content .ui-state-active {',
-        //   'background-color: #1a80b6;',
-        //   'border-radius: 50%;',
-        //   'border-color: #1a80b6;',
-        //   'color: white;',
-        // '}',
-        // '.drop-off-date .ui-widget-content .ui-state-hover {',
-        //   'border: 0 none;',
-        // '}',
+        '.drop-off-date {',
+          'height: max-content;',
+        '}',
+        '.drop-off-date .ui-datepicker {',
+          'background-color: white;',
+          'border-radius: 0;',
+          'margin: 0 auto;',
+          'min-width: 320px;',
+          'padding: 0;',
+          'vertical-align: top;',
+          'width: 33%;',
+        '}',
+        '.drop-off-date .ui-widget-header {',
+          'background-color: #00ab8e;',
+          'background-image: none;',
+          'border: 0 none;',
+          'border-radius: 0;',
+          'color: white;',
+          'padding: 18px 13px 18px 13px;',
+        '}',
+        '.drop-off-date .ui-widget-header .ui-state-hover {',
+          'background-color: inherit;',
+          'background-image: none;',
+          'border: 0 none;',
+          'cursor: pointer;',
+          'font-weight: normal;',
+        '}',
+        '.drop-off-date .ui-widget-header a {',
+          'color: inherit;',
+        '}',
+        '.drop-off-date .ui-datepicker .ui-datepicker-prev,',
+        '.drop-off-date .ui-datepicker .ui-datepicker-next {',
+          'height: 92%;',
+        '}',
+        '.drop-off-date .ui-widget-header .ui-icon {',
+          'background-image: none;',
+          'font-size: 1.4em;',
+          'height: 1.8em;',
+          'margin-top: -1em;',
+          'text-indent: unset;',
+          'width: 1.8em;',
+        '}',
+        '.drop-off-date .ui-datepicker table {',
+          'background-color: inherit;',
+        '}',
+        '.drop-off-date .ui-datepicker th {',
+          'color: #797d86;',
+        '}',
+        '.drop-off-date .ui-datepicker td span, ',
+        '.drop-off-date .ui-datepicker td a {',
+          'text-align: center;',
+        '}',
+        '.drop-off-date .ui-widget-content .ui-state-default {',
+          'background-color: inherit;',
+          'background-image: none;',
+          'color: #a4aaaa;',
+        '}',
+        '.drop-off-date .ui-widget-content .ui-state-active {',
+          'background-color: #00ab8e;',
+          'border-radius: 50%;',
+          'border-color: #00ab8e;',
+          'color: white;',
+        '}',
+        '.drop-off-date .ui-widget-content .ui-state-hover {',
+          'border: 0 none;',
+        '}',
         // '.pick-up-date {',
         //   'color: #1a80b6;',
         //   'font-size: 26px;',
@@ -436,16 +438,16 @@ var calculatorBehavior = {
       );
     }
 
-    /*
     jQuery('#drop-off-date').datepicker({
       beforeShowDay: jQuery.datepicker.noWeekends,
       nextText: '&rsaquo;',
-      onSelect: jQuery.proxy(this.dropOffDate_select, this),
+      onSelect: this.dropOffDate_select.bind(this),
       prevText: '&lsaquo;',
       showOtherMonths: true,
       selectOtherMonths: true
     });
 
+    /*
     for (var submissionTime in calculator.SUBMISSION_TIMES) {
       this.submissionTimeButtons[submissionTime] = jQuery(
         'a.fusion-button[title="' + submissionTime + '"]'
@@ -476,14 +478,9 @@ var calculatorBehavior = {
    * elements
    */
   getStepElements: function() {
-    var dropOffDateActions = jQuery('#drop-off-date').closest('.fusion-fullwidth');
-    var dropOffDateSeparator = dropOffDateActions.prev();
-    var dropOffDateHeader = dropOffDateSeparator.prev();
+    this.dropOffDate = jQuery('#drop-off-date').closest('.wpb_wrapper');
 
-    this.dropOffDate.push(
-      dropOffDateHeader, dropOffDateSeparator, dropOffDateActions
-    );
-
+    /*
     var dropOffTimeActions = jQuery('a[title="BEFORE 10:30AM"]').closest('.fusion-fullwidth');
     var dropOffTimeSeparator = dropOffTimeActions.prev();
     var dropOffTimeHeader = dropOffTimeSeparator.prev();
@@ -511,6 +508,7 @@ var calculatorBehavior = {
     this.enter.forEach(function(el) {
       el.hide();
     });
+    */
   },
 
 
@@ -532,7 +530,7 @@ var calculatorBehavior = {
     this.selectTestType(newTestType);
 
     // this.toggleSteps();
-    // this.scrollToEl(this.dropOffDate[0]);
+    this.scrollToEl(this.dropOffDate);
   },
 
   /**
@@ -572,7 +570,8 @@ var calculatorBehavior = {
 
   dropOffDate_select: function() {
     calculator.dropOffDate = jQuery('#drop-off-date').datepicker('getDate');
-    this.scrollToEl(this.dropOffTime[0]);
+    // TODO: Continue here on Tuesday night!
+    // this.scrollToEl(this.dropOffTime[0]);
   },
 
   submissionTimeButton_click: function(e) {
@@ -677,21 +676,10 @@ var calculatorBehavior = {
         return 0.5 * (Math.pow((pos - 2), 5) + 2);
       }
     };
-    var fusionHeaderWrapper = jQuery('.fusion-header-wrapper');
-    var scrollTargetY = el.offset().top;
+
+    var headerOuterHeight = jQuery('#header-outer').outerHeight();
+    var scrollTargetY = el.offset().top - headerOuterHeight;
     var scrollY = window.pageYOffset;
-
-    // TODO: There is an edge case where if we're at the top of the page
-    // the header is not yet sticky then the fusion-is-sticky class won't
-    // yet be applied so we won't end up scrolling to the properly location
-    // because the fusion-is-sticky class will be added after we animate
-    // the scroll position here. A good way to work around this would be to
-    // check to see if the fusion-is-sticky class is present 100px into the
-    // scroll and if so recalculate the scrollTargetY then!
-
-    if (fusionHeaderWrapper.is('.fusion-is-sticky')) {
-      scrollTargetY = scrollTargetY - jQuery('.fusion-header').height();
-    }
 
     scrollTargetY = typeof scrollTargetY === 'undefined' ? 0 : scrollTargetY;
     duration = duration || 0.5;
