@@ -18,10 +18,9 @@ var calculator = {
   },
 
   TURN_AROUND_TIMES: {
-    'SAME DAY': 'SAME DAY',
+    'STANDARD': 'STANDARD',
     'NEXT DAY': 'NEXT DAY',
-    'TWO DAY': 'TWO DAY',
-    'FOUR DAY': 'FOUR DAY'
+    'SAME DAY': 'SAME DAY'
   },
 
   PICKUP_DAY: {
@@ -313,8 +312,8 @@ var calculatorBehavior = {
   // Data Members
   // ----------------------------------------------------------------------
 
-  dropOffDate: [],
-  dropOffTime: [],
+  dropOffDate: null,
+  dropOffTime: null,
   turnAroundTime: [],
   enter: [],
   testTypeButtons: {},
@@ -447,27 +446,27 @@ var calculatorBehavior = {
       selectOtherMonths: true
     });
 
-    /*
     for (var submissionTime in calculator.SUBMISSION_TIMES) {
-      this.submissionTimeButtons[submissionTime] = jQuery(
-        'a.fusion-button[title="' + submissionTime + '"]'
-      );
+      var selector = 'a.nectar-button span:contains("' + submissionTime + ' (MST)")';
+      this.submissionTimeButtons[submissionTime] = jQuery(selector).closest('a');
+
       this.submissionTimeButtons[submissionTime].on(
         'click',
-        jQuery.proxy(this.submissionTimeButton_click, this)
+        this.submissionTimeButton_click.bind(this)
       );
     }
 
     for (var turnAroundTime in calculator.TURN_AROUND_TIMES) {
-      this.turnAroundTimeButtons[turnAroundTime] = jQuery(
-        'a.fusion-button[title="' + turnAroundTime + '"]'
-      );
+      var selector = 'a.nectar-button span:contains("' + turnAroundTime + '")';
+      this.turnAroundTimeButtons[turnAroundTime] = jQuery(selector).closest('a');
+
       this.turnAroundTimeButtons[turnAroundTime].on(
         'click',
-        jQuery.proxy(this.turnAroundTimeButton_click, this)
+        this.turnAroundTimeButton_click.bind(this)
       );
     }
 
+    /*
     this.enterButton = jQuery('a[title="ENTER"]');
     this.enterButton.on('click', jQuery.proxy(this.enter_click, this));
     */
@@ -479,24 +478,10 @@ var calculatorBehavior = {
    */
   getStepElements: function() {
     this.dropOffDate = jQuery('#drop-off-date').closest('.wpb_wrapper');
+    this.dropOffTime = jQuery('h2:contains("Step 3")').closest('.wpb_wrapper');
+    this.turnAroundTime = jQuery('h2:contains("Step 4")').closest('.wpb_wrapper');
 
     /*
-    var dropOffTimeActions = jQuery('a[title="BEFORE 10:30AM"]').closest('.fusion-fullwidth');
-    var dropOffTimeSeparator = dropOffTimeActions.prev();
-    var dropOffTimeHeader = dropOffTimeSeparator.prev();
-
-    this.dropOffTime.push(
-      dropOffTimeHeader, dropOffTimeSeparator, dropOffTimeActions
-    );
-
-    var turnAroundTimeActions = jQuery('a[title="TWO DAY"]').closest('.fusion-fullwidth');
-    var turnAroundTimeSeparator = turnAroundTimeActions.prev();
-    var turnAroundTimeHeader = turnAroundTimeSeparator.prev();
-
-    this.turnAroundTime.push(
-      turnAroundTimeHeader, turnAroundTimeSeparator, turnAroundTimeActions
-    );
-
     var enterActions = jQuery('a[title="ENTER"]').closest('.fusion-fullwidth');
     var enterSeparator = enterActions.prev();
     var enterHeader = enterSeparator.prev();
@@ -518,8 +503,8 @@ var calculatorBehavior = {
 
   /**
    * @description When selecting a test type we first unselect the
-   * previously selected test type, select the new one, show/hide steps 3
-   * and 4 as appropriate and scroll to the next step.
+   * previously selected test type, select the new one, and scroll to the
+   * next step.
    */
   testTypeButton_click: function(e) {
     e.preventDefault();
@@ -529,7 +514,6 @@ var calculatorBehavior = {
 
     this.selectTestType(newTestType);
 
-    // this.toggleSteps();
     this.scrollToEl(this.dropOffDate);
   },
 
@@ -546,48 +530,23 @@ var calculatorBehavior = {
     calculator.testType = newTestType;
   },
 
-  /**
-   * @todo Show/hide step 4 depending on the selected test type.
-   */
-  toggleSteps: function() {
-    if (calculator.canSelectTurnAroundTime()) {
-      this.turnAroundTime.forEach(function(el) { el.show(); });
-    }
-    else {
-      this.turnAroundTime.forEach(function(el) { el.hide(); });
-
-      if (calculator.testType === calculator.TEST_TYPES.MICROBIAL) {
-        calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['FOUR DAY'];
-      }
-      else if (calculator.testType === calculator.TEST_TYPES.RESIDUAL) {
-        calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['TWO DAY'];
-      }
-      else {
-        calculator.turnAroundTime = null;
-      }
-    }
-  },
-
   dropOffDate_select: function() {
     calculator.dropOffDate = jQuery('#drop-off-date').datepicker('getDate');
-    // TODO: Continue here on Tuesday night!
-    // this.scrollToEl(this.dropOffTime[0]);
+    this.scrollToEl(this.dropOffTime);
   },
 
   submissionTimeButton_click: function(e) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    var newSubmissionTime = jQuery(e.target).closest('.fusion-button').attr('title');
+    var newSubmissionTime = jQuery(e.target)
+      .closest('.nectar-button')
+      .find('span')
+      .text().replace(' (MST)', '');
 
     this.selectSubmissionTime(newSubmissionTime);
 
-    if (calculator.canSelectTurnAroundTime()) {
-      this.scrollToEl(this.turnAroundTime[0]);
-    }
-    else {
-      this.showPickUpDate();
-    }
+    this.scrollToEl(this.turnAroundTime);
   },
 
   selectSubmissionTime: function(newSubmissionTime) {
@@ -603,10 +562,13 @@ var calculatorBehavior = {
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    var newTurnAroundTime = jQuery(e.target).closest('.fusion-button').attr('title');
+    var newTurnAroundTime = jQuery(e.target).closest('.nectar-button').find('span').text();
 
     this.selectTurnAroundTime(newTurnAroundTime);
-    this.showPickUpDate();
+    // TODO: Continue here on Wednesday night. Where will the pickup date be
+    // displayed? In the Agricor site it is displayed in a modal, but there
+    // doesn't appear to be a modal in Botanacor.
+    // this.showPickUpDate();
   },
 
   selectTurnAroundTime: function(newTurnAroundTime) {
