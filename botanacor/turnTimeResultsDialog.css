@@ -1,0 +1,37 @@
+html.noscroll,
+body.noscroll {
+  overflow-y: hidden;
+}
+
+.resultsDialogContainer {
+  background-color: rgba(0, 0, 0, 0.3);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  opacity: 1;
+  position: fixed;
+  transition: opacity 250ms linear;
+  z-index: 99999;
+}
+
+.resultsDialogContainer.fadeOut {
+  opacity: 0;
+}
+
+.resultsDialog {
+  background-color: #f6f6f6;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  left: 50vw;
+  margin-left: -25vw;
+  max-height: 25vh;
+  position: absolute;
+  top: 5vh;
+  transition: all 500ms ease-in-out;
+  width: 50vw;
+}
+
+.resultsDialog.slideUp {
+  transform: translate(0, -500%);
+}

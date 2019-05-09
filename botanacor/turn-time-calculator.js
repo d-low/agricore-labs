@@ -480,20 +480,6 @@ var calculatorBehavior = {
     this.dropOffDate = jQuery('#drop-off-date').closest('.wpb_wrapper');
     this.dropOffTime = jQuery('h2:contains("Step 3")').closest('.wpb_wrapper');
     this.turnAroundTime = jQuery('h2:contains("Step 4")').closest('.wpb_wrapper');
-
-    /*
-    var enterActions = jQuery('a[title="ENTER"]').closest('.fusion-fullwidth');
-    var enterSeparator = enterActions.prev();
-    var enterHeader = enterSeparator.prev();
-
-    this.enter.push(
-      enterActions, enterSeparator, enterHeader
-    );
-
-    this.enter.forEach(function(el) {
-      el.hide();
-    });
-    */
   },
 
 
@@ -565,10 +551,8 @@ var calculatorBehavior = {
     var newTurnAroundTime = jQuery(e.target).closest('.nectar-button').find('span').text();
 
     this.selectTurnAroundTime(newTurnAroundTime);
-    // TODO: Continue here on Wednesday night. Where will the pickup date be
-    // displayed? In the Agricor site it is displayed in a modal, but there
-    // doesn't appear to be a modal in Botanacor.
-    // this.showPickUpDate();
+
+    this.showPickUpDate();
   },
 
   selectTurnAroundTime: function(newTurnAroundTime) {
@@ -581,31 +565,80 @@ var calculatorBehavior = {
   },
 
   showPickUpDate: function() {
-    this.enterButton.trigger('click');
-  },
-
-  enter_click: function() {
-    var header = jQuery('.turn-time p:first span');
-    var body = jQuery('.turn-time p:last span');
+    var header = '';
+    var body = '';
 
     try {
-      var readyOnDate = calculator.calculate();
+      // TODO: var readyOnDate = calculator.calculate();
+      var readyOnDate = new Date();
 
-      header.html('Your expected turn-time');
-      body.html([
-        'Your',
-        calculator.testType.toLowerCase(),
-        'results will be available by end of day on:',
+      header = 'Your expected turn-time';
+      body = [
+        'Your ' + calculator.testType.toLowerCase() + ' results will be available by end of day on:',
         '<br />',
-        '<strong class="pick-up-date">',
+        '<strong class="turnTimeResultsDialog_pickUpDate">',
           jQuery.datepicker.formatDate('DD MM d, yy', readyOnDate),
-        '</strong>'
-      ].join(' '));
+        '</strong>',
+      ].join('');
     }
     catch (exp) {
-      header.html('Error calculating turn-time!');
-      body.html(exp.message);
+      header = 'Error calculating turn-time!';
     }
+
+    var $dialog = jQuery([
+      '<div class="resultsDialog slideUp">',
+        '<header class="resultsDialog__header">',
+          '<h6 class="resultsDialog__headerText">' + header + '</h6>',
+          '<button class="resultsDialog__closeButton">X</button>',
+        '</header>',
+        '<p class="resultsDialog__body">' + body + '</p>',
+      '</div>',
+    ].join(''));
+
+    var $dialogContainer = jQuery('<div class="resultsDialogContainer fadeOut"></div>');
+    $dialogContainer.append($dialog);
+
+    jQuery('body').append($dialogContainer);
+
+    function closeResultsDialog(e) {
+      var $target = jQuery(e.target);
+
+      if (!$target.hasClass('resultsDialog__closeButton') &&
+          !$target.hasClass('resultsDialogContainer')) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return;
+      }
+
+      jQuery('html').removeClass('noscroll');
+      jQuery('body').removeClass('noscroll');
+
+      $dialog.addClass('slideUp');
+
+      window.setTimeout(function() {
+        $dialogContainer.addClass('fadeOut');
+      }, 500);
+
+      window.setTimeout(function() {
+        $dialogContainer.remove();
+      }, 750);
+    }
+
+    // Close the dialog when clicking on the button or smoke
+    jQuery('.resultsDialog__closeButton').on('click', closeResultsDialog);
+    jQuery($dialogContainer).on('click', closeResultsDialog);
+
+    // Show the dialog
+    window.setTimeout(function() {
+      jQuery('html').addClass('noscroll');
+      jQuery('body').addClass('noscroll');
+
+      $dialogContainer.removeClass('fadeOut');
+
+      window.setTimeout(function() {
+        $dialog.removeClass('slideUp');
+      }, 250);
+    }, 0);
   },
 
 
