@@ -572,26 +572,29 @@ var calculatorBehavior = {
       // TODO: var readyOnDate = calculator.calculate();
       var readyOnDate = new Date();
 
-      header = 'Your expected turn-time';
       body = [
-        'Your ' + calculator.testType.toLowerCase() + ' results will be available by end of day on:',
-        '<br />',
-        '<strong class="turnTimeResultsDialog_pickUpDate">',
-          jQuery.datepicker.formatDate('DD MM d, yy', readyOnDate),
-        '</strong>',
+        '<p class="resultsDialog__bodyCopy resultsDialog__bodyLargeCopy">Your expected turn-time</p>',
+        '<p class="resultsDialog__bodyCopy">',
+          'Your ' + calculator.testType.toLowerCase() + ' results will be available by end of day on:',
+          '<br />',
+          '<strong class="resultsDialog__bodyStrong">',
+            jQuery.datepicker.formatDate('DD MM d, yy', readyOnDate),
+          '</strong>',
+        '</p>',
       ].join('');
     }
     catch (exp) {
       header = 'Error calculating turn-time!';
     }
 
+    // TODO: Move this into a reusable function so that "Coming Soon" messages
+    // can be displayed for the appropriate tests.
     var $dialog = jQuery([
       '<div class="resultsDialog slideUp">',
         '<header class="resultsDialog__header">',
-          '<h6 class="resultsDialog__headerText">' + header + '</h6>',
-          '<button class="resultsDialog__closeButton">X</button>',
+          '<button class="resultsDialog__headerCloseButton">x</button>',
         '</header>',
-        '<p class="resultsDialog__body">' + body + '</p>',
+        '<div class="resultsDialog__body">' + body + '</div>',
       '</div>',
     ].join(''));
 
@@ -603,7 +606,7 @@ var calculatorBehavior = {
     function closeResultsDialog(e) {
       var $target = jQuery(e.target);
 
-      if (!$target.hasClass('resultsDialog__closeButton') &&
+      if (!$target.hasClass('resultsDialog__headerCloseButton') &&
           !$target.hasClass('resultsDialogContainer')) {
         e.preventDefault();
         e.stopImmediatePropagation();
@@ -625,7 +628,7 @@ var calculatorBehavior = {
     }
 
     // Close the dialog when clicking on the button or smoke
-    jQuery('.resultsDialog__closeButton').on('click', closeResultsDialog);
+    jQuery('.resultsDialog__headerCloseButton').on('click', closeResultsDialog);
     jQuery($dialogContainer).on('click', closeResultsDialog);
 
     // Show the dialog
