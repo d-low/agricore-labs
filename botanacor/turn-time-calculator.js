@@ -23,234 +23,97 @@ var calculator = {
     'SAME DAY': 'SAME DAY'
   },
 
-  PICKUP_DAY: {
-    'MICROBIAL': {
-      'BEFORE 10:30AM': {
-        1: {
-          'FOUR DAY' : 4
-        },
-        2: {
-          'FOUR DAY' : 5
-        },
-        3: {
-          'FOUR DAY' : 6
-        },
-        4: {
-          'FOUR DAY' : 0
-        },
-        5: {
-          'FOUR DAY' : 1
-        }
-      }, // end MICROBIAL - BEFORE 10:30AM
-      'AFTER 10:30AM': {
-        1: {
-          'FOUR DAY' : 5
-        },
-        2: {
-          'FOUR DAY' : 6
-        },
-        3: {
-          'FOUR DAY' : 0
-        },
-        4: {
-          'FOUR DAY' : 1
-        },
-        5: {
-          'FOUR DAY' : 4
-        }
-      }, // end MICROBIAL - AFTER 10:30AM
-    }, // end MICROBIAL
-    'PESTICIDES': {
-      'BEFORE 10:30AM': {
-        1: {
-          'TWO DAY' : 3,
-          'NEXT DAY' : 2,
-          'SAME DAY': 1
-        },
-        2: {
-          'TWO DAY' : 4,
-          'NEXT DAY' : 3,
-          'SAME DAY': 2
-        },
-        3: {
-          'TWO DAY' : 5,
-          'NEXT DAY' : 4,
-          'SAME DAY': 3
-        },
-        4: {
-          'TWO DAY' : 1,
-          'NEXT DAY' : 5,
-          'SAME DAY': 4
-        },
-        5: {
-          'TWO DAY' : 2,
-          'NEXT DAY' : 1,
-          'SAME DAY': 5
-        }
-      }, // end PESTICIDES - BEFORE 10:30AM
-      'AFTER 10:30AM': {
-        1: {
-          'TWO DAY' : 4,
-          'NEXT DAY' : 3,
-          'SAME DAY': 2
-        },
-        2: {
-          'TWO DAY' : 5,
-          'NEXT DAY' : 4,
-          'SAME DAY': 3
-        },
-        3: {
-          'TWO DAY' : 1,
-          'NEXT DAY' : 5,
-          'SAME DAY': 4
-        },
-        4: {
-          'TWO DAY' : 2,
-          'NEXT DAY' : 1,
-          'SAME DAY': 5
-        },
-        5: {
-          'TWO DAY' : 3,
-          'NEXT DAY' : 2,
-          'SAME DAY': 1
-        }
-      }, // end PESTICIDES - AFTER 10:30AM
-    }, // end PESTICIDES
+  TEST_DURATION: {
     'POTENCY': {
       'BEFORE 10:30AM': {
-        1: {
-          'TWO DAY' : 3,
-          'NEXT DAY' : 2,
-          'SAME DAY': 1
-        },
-        2: {
-          'TWO DAY' : 4,
-          'NEXT DAY' : 3,
-          'SAME DAY': 2
-        },
-        3: {
-          'TWO DAY' : 5,
-          'NEXT DAY' : 4,
-          'SAME DAY': 3
-        },
-        4: {
-          'TWO DAY' : 1,
-          'NEXT DAY' : 5,
-          'SAME DAY': 4
-        },
-        5: {
-          'TWO DAY' : 2,
-          'NEXT DAY' : 1,
-          'SAME DAY': 5
-        }
-      }, // end POTENCY - BEFORE 10:30AM
+        'STANDARD': 4,
+        'NEXT DAY': 1,
+        'SAME DAY': 0,
+      },
       'AFTER 10:30AM': {
-        1: {
-          'TWO DAY' : 4,
-          'NEXT DAY' : 3,
-          'SAME DAY': 2
-        },
-        2: {
-          'TWO DAY' : 5,
-          'NEXT DAY' : 4,
-          'SAME DAY': 3
-        },
-        3: {
-          'TWO DAY' : 1,
-          'NEXT DAY' : 5,
-          'SAME DAY': 4
-        },
-        4: {
-          'TWO DAY' : 2,
-          'NEXT DAY' : 1,
-          'SAME DAY': 5
-        },
-        5: {
-          'TWO DAY' : 3,
-          'NEXT DAY' : 2,
-          'SAME DAY': 1
-        }
-      }, // end POTENCY - AFTER 10:30AM
-
-    }, // end POTENCY
-    'RESIDUAL': {
+        'STANDARD': 5,
+        'NEXT DAY': 2,
+        'SAME DAY': 1,
+      },
+    },
+    'SOLVENTS': {
       'BEFORE 10:30AM': {
-        1: {
-          'TWO DAY' : 3,
-          'NEXT DAY' : 2
-        },
-        2: {
-          'TWO DAY' : 4,
-          'NEXT DAY' : 3
-        },
-        3: {
-          'TWO DAY' : 5,
-          'NEXT DAY' : 4
-        },
-        4: {
-          'TWO DAY' : 1,
-          'NEXT DAY' : 5
-        },
-        5: {
-          'TWO DAY' : 2,
-          'NEXT DAY' : 1
-        }
-      }, // end RESIDUAL - BEFORE 10:30AM
+        'STANDARD': 4,
+        'NEXT DAY': 1,
+        'SAME DAY': 0,
+      },
       'AFTER 10:30AM': {
-        1: {
-          'TWO DAY' : 4,
-          'NEXT DAY' : 3
-        },
-        2: {
-          'TWO DAY' : 5,
-          'NEXT DAY' : 4
-        },
-        3: {
-          'TWO DAY' : 1,
-          'NEXT DAY' : 5
-        },
-        4: {
-          'TWO DAY' : 2,
-          'NEXT DAY' : 1
-        },
-        5: {
-          'TWO DAY' : 3,
-          'NEXT DAY' : 2
-        }
-      }, // end RESIDUAL - AFTER 10:30AM
-    } // end RESIDUAL
-  }, // end PICKUP_DAY lookup table
+        'STANDARD': 5,
+        'NEXT DAY': 2,
+        'SAME DAY': 1,
+      },
+    },
+    'WATER ACTIVITY': {
+      'BEFORE 10:30AM': {
+        'STANDARD': 4,
+        'NEXT DAY': 1,
+        'SAME DAY': 0,
+      },
+      'AFTER 10:30AM': {
+        'STANDARD': 5,
+        'NEXT DAY': 2,
+        'SAME DAY': 1,
+      },
+    },
+    'PH': {
+      'BEFORE 10:30AM': {
+        'STANDARD': 4,
+        'NEXT DAY': 1,
+        'SAME DAY': 0,
+      },
+      'AFTER 10:30AM': {
+        'STANDARD': 5,
+        'NEXT DAY': 2,
+        'SAME DAY': 1,
+      },
+    },
+    'DENSITY': {
+      'BEFORE 10:30AM': {
+        'STANDARD': 4,
+        'NEXT DAY': 1,
+        'SAME DAY': 0,
+      },
+      'AFTER 10:30AM': {
+        'STANDARD': 5,
+        'NEXT DAY': 2,
+        'SAME DAY': 1,
+      },
+    },
+  },
 
   testType: null,
   dropOffDate: null,
   submissionTime: null,
   turnAroundTime: null,
 
-  /**
-   * @description Use pickup day look up table to find the day of the week
-   * that the test will be ready. If the day of the week that the test will
-   * be ready is less than the current day of the week then it'll be ready
-   * next week.
-   */
   calculate: function() {
     if (!this.canCalculate(true)) {
       return;
     }
 
-    var resultsDate = null;
-    var dropOffDayOfWeek = this.dropOffDate.getDay();
-    var pickUpDay = this.PICKUP_DAY[this.testType][this.submissionTime][dropOffDayOfWeek][this.turnAroundTime];
+    var msPerDay = 24 * 60 * 60 * 1000;
+    var year = this.dropOffDate.getFullYear();
+    var month = this.dropOffDate.getMonth();
+    var day = this.dropOffDate.getDate();
 
-    if (pickUpDay < dropOffDayOfWeek) {
-      resultsDate = this.getNextDayOfWeek(this.dropOffDate, pickUpDay);
-    }
-    else {
-      resultsDate =  new Date(
-        this.dropOffDate.getTime() + ((pickUpDay - dropOffDayOfWeek) * 86400000)
-      );
+    var dropOffDayNormalized = new Date(year, month, day);
+    var testDuration = this.TEST_DURATION[this.testType][this.submissionTime][this.turnAroundTime];
+    var resultsDate = new Date(dropOffDayNormalized.getTime());
+
+    while (testDuration) {
+      resultsDate = new Date(resultsDate.getTime() + msPerDay);
+
+      if (resultsDate.getDay() !== 0 && resultsDate.getDay() !== 6) {
+        testDuration = testDuration - 1;
+      }
     }
 
-    return resultsDate;
+    return this.getNextDayOfWeek(resultsDate);
   },
 
   canCalculate: function(throwError) {
@@ -293,13 +156,13 @@ var calculator = {
     return (this.testType === this.TEST_TYPES.POTENCY || this.testType === this.TEST_TYPES.PESTICIDES);
   },
 
-  /**
-   * @see http://codereview.stackexchange.com/questions/33527/find-next-occurring-friday-or-any-dayofweek
-   */
-  getNextDayOfWeek: function(date, dayOfWeek) {
-    var resultDate = new Date(date.getTime());
-    resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
-    return resultDate;
+  getNextDayOfWeek: function(resultsDate) {
+    if (resultsDate.getDay() === 6) {
+      return new Date(resultsDate.getTime() + (2 * 24 * 60 * 60 * 1000));
+    } else if (resultsDate.getDay() === 0) {
+      return new Date(resultsDate.getTime() + (1 * 24 * 60 * 60 * 1000));
+    }
+    return resultsDate;
   }
 };
 
@@ -569,8 +432,7 @@ var calculatorBehavior = {
     var body = '';
 
     try {
-      // TODO: var readyOnDate = calculator.calculate();
-      var readyOnDate = new Date();
+      var readyOnDate = calculator.calculate();
 
       body = [
         '<p class="resultsDialog__bodyCopy resultsDialog__bodyLargeCopy">Your expected turn-time</p>',
