@@ -84,6 +84,22 @@ var calculator = {
         'SAME DAY': 1,
       },
     },
+    'TERPENES': {
+      'BEFORE 10:30AM': {
+        'STANDARD': 5,
+      },
+      'AFTER 10:30AM': {
+        'STANDARD': 6,
+      },
+    },
+    'MICROBIALS': {
+      'BEFORE 10:30AM': {
+        'STANDARD': 5,
+      },
+      'AFTER 10:30AM': {
+        'STANDARD': 6,
+      },
+    }
   },
 
   testType: null,
@@ -108,12 +124,16 @@ var calculator = {
     while (testDuration) {
       resultsDate = new Date(resultsDate.getTime() + msPerDay);
 
-      if (resultsDate.getDay() !== 0 && resultsDate.getDay() !== 6) {
+      if (this.testType === this.TEST_TYPES.MICROBIALS) {
+        testDuration = testDuration - 1;
+      }
+      else if (resultsDate.getDay() !== 0 && resultsDate.getDay() !== 6) {
         testDuration = testDuration - 1;
       }
     }
 
-    return this.getNextDayOfWeek(resultsDate);
+    return this.testType === this.TEST_TYPES.MICROBIALS
+      ? resultsDate : this.getNextDayOfWeek(resultsDate);
   },
 
   canCalculate: function(throwError) {
@@ -153,7 +173,8 @@ var calculator = {
   },
 
   canSelectTurnAroundTime: function() {
-    return (this.testType === this.TEST_TYPES.POTENCY || this.testType === this.TEST_TYPES.PESTICIDES);
+    return (this.testType !== this.TEST_TYPES.TERPENES
+            && this.testType !== this.TEST_TYPES.MICROBIALS);
   },
 
   getNextDayOfWeek: function(resultsDate) {
@@ -362,7 +383,7 @@ var calculatorBehavior = {
     var newTestType = jQuery(e.target).closest('a.nectar-button').find('span').text();
 
     this.selectTestType(newTestType);
-
+    this.toggleSteps();
     this.scrollToEl(this.dropOffDate);
   },
 
@@ -377,6 +398,19 @@ var calculatorBehavior = {
 
     this.testTypeButtons[newTestType].addClass('selected');
     calculator.testType = newTestType;
+  },
+
+  /**
+   * Show/hide step 4 depending on the selected test type.
+   */
+  toggleSteps: function() {
+    if (calculator.canSelectTurnAroundTime()) {
+      this.turnAroundTime.show();
+    }
+    else {
+      this.turnAroundTime.hide();
+      calculator.turnAroundTime = calculator.TURN_AROUND_TIMES.STANDARD;
+    }
   },
 
   dropOffDate_select: function() {
@@ -395,7 +429,12 @@ var calculatorBehavior = {
 
     this.selectSubmissionTime(newSubmissionTime);
 
-    this.scrollToEl(this.turnAroundTime);
+    if (calculator.canSelectTurnAroundTime()) {
+      this.scrollToEl(this.turnAroundTime);
+    }
+    else {
+      this.showPickUpDate();
+    }
   },
 
   selectSubmissionTime: function(newSubmissionTime) {
