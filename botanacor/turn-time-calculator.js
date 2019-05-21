@@ -382,6 +382,18 @@ var calculatorBehavior = {
 
     var newTestType = jQuery(e.target).closest('a.nectar-button').find('span').text();
 
+    if (newTestType === calculator.TEST_TYPES.PESTICIDES
+        || newTestType === calculator.TEST_TYPES['HEAVY METALS']
+        || newTestType === calculator.TEST_TYPES.MYCOTOXINS) {
+      var body = [
+        '<p class="resultsDialog__bodyCopy">',
+          'This test type is not available yet.',
+        '</p>',
+      ].join('')
+      this.showDialog(body);
+      return;
+    }
+
     this.selectTestType(newTestType);
     this.toggleSteps();
     this.scrollToEl(this.dropOffDate);
@@ -467,7 +479,6 @@ var calculatorBehavior = {
   },
 
   showPickUpDate: function() {
-    var header = '';
     var body = '';
 
     try {
@@ -485,64 +496,17 @@ var calculatorBehavior = {
       ].join('');
     }
     catch (exp) {
-      header = 'Error calculating turn-time!';
+      body = [
+        '<p class="resultsDialog__bodyCopy resultsDialog__bodyLargeCopy">',
+          'Error calculating turn-time',
+        '</p>',
+        '<p class="resultsDialog__bodyCopy">',
+          exp.message,
+        '</p>'
+      ].join('');
     }
 
-    // TODO: Move this into a reusable function so that "Coming Soon" messages
-    // can be displayed for the appropriate tests.
-    var $dialog = jQuery([
-      '<div class="resultsDialog slideUp">',
-        '<header class="resultsDialog__header">',
-          '<button class="resultsDialog__headerCloseButton">x</button>',
-        '</header>',
-        '<div class="resultsDialog__body">' + body + '</div>',
-      '</div>',
-    ].join(''));
-
-    var $dialogContainer = jQuery('<div class="resultsDialogContainer fadeOut"></div>');
-    $dialogContainer.append($dialog);
-
-    jQuery('body').append($dialogContainer);
-
-    function closeResultsDialog(e) {
-      var $target = jQuery(e.target);
-
-      if (!$target.hasClass('resultsDialog__headerCloseButton') &&
-          !$target.hasClass('resultsDialogContainer')) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return;
-      }
-
-      jQuery('html').removeClass('noscroll');
-      jQuery('body').removeClass('noscroll');
-
-      $dialog.addClass('slideUp');
-
-      window.setTimeout(function() {
-        $dialogContainer.addClass('fadeOut');
-      }, 500);
-
-      window.setTimeout(function() {
-        $dialogContainer.remove();
-      }, 750);
-    }
-
-    // Close the dialog when clicking on the button or smoke
-    jQuery('.resultsDialog__headerCloseButton').on('click', closeResultsDialog);
-    jQuery($dialogContainer).on('click', closeResultsDialog);
-
-    // Show the dialog
-    window.setTimeout(function() {
-      jQuery('html').addClass('noscroll');
-      jQuery('body').addClass('noscroll');
-
-      $dialogContainer.removeClass('fadeOut');
-
-      window.setTimeout(function() {
-        $dialog.removeClass('slideUp');
-      }, 250);
-    }, 0);
+    this.showDialog(body);
   },
 
 
@@ -601,6 +565,62 @@ var calculatorBehavior = {
 
     // call it once to get started
     tick();
+  },
+
+  showDialog(body) {
+    var $dialog = jQuery([
+      '<div class="resultsDialog slideUp">',
+        '<header class="resultsDialog__header">',
+          '<button class="resultsDialog__headerCloseButton">x</button>',
+        '</header>',
+        '<div class="resultsDialog__body">' + body + '</div>',
+      '</div>',
+    ].join(''));
+
+    var $dialogContainer = jQuery('<div class="resultsDialogContainer fadeOut"></div>');
+    $dialogContainer.append($dialog);
+
+    jQuery('body').append($dialogContainer);
+
+    function closeResultsDialog(e) {
+      var $target = jQuery(e.target);
+
+      if (!$target.hasClass('resultsDialog__headerCloseButton') &&
+          !$target.hasClass('resultsDialogContainer')) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return;
+      }
+
+      jQuery('html').removeClass('noscroll');
+      jQuery('body').removeClass('noscroll');
+
+      $dialog.addClass('slideUp');
+
+      window.setTimeout(function() {
+        $dialogContainer.addClass('fadeOut');
+      }, 500);
+
+      window.setTimeout(function() {
+        $dialogContainer.remove();
+      }, 750);
+    }
+
+    // Close the dialog when clicking on the button or smoke
+    jQuery('.resultsDialog__headerCloseButton').one('click', closeResultsDialog);
+    jQuery($dialogContainer).one('click', closeResultsDialog);
+
+    // Show the dialog
+    window.setTimeout(function() {
+      jQuery('html').addClass('noscroll');
+      jQuery('body').addClass('noscroll');
+
+      $dialogContainer.removeClass('fadeOut');
+
+      window.setTimeout(function() {
+        $dialog.removeClass('slideUp');
+      }, 250);
+    }, 0);
   }
 };
 
