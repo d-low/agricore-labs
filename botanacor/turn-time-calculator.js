@@ -380,16 +380,28 @@ var calculatorBehavior = {
     e.preventDefault();
     e.stopImmediatePropagation();
 
+    var errorMesg;
     var newTestType = jQuery(e.target).closest('a.nectar-button').find('span').text();
 
-    if (newTestType === calculator.TEST_TYPES.PESTICIDES
-        || newTestType === calculator.TEST_TYPES['HEAVY METALS']
-        || newTestType === calculator.TEST_TYPES.MYCOTOXINS) {
-      var body = [
-        '<p class="resultsDialog__bodyCopy">',
-          'This test type is not available yet.',
-        '</p>',
-      ].join('')
+    switch (newTestType) {
+      case calculator.TEST_TYPES.PESTICIDES:
+        errorMesg = 'Pesticide Screening is coming soon.';
+        break;
+
+      case calculator.TEST_TYPES['HEAVY METALS']:
+        errorMesg = 'Heavy Metal Testing is coming soon.';
+        break;
+
+      case calculator.TEST_TYPES.MYCOTOXINS:
+        errorMesg = 'Mycotoxin Testing is coming soon.';
+        break;
+
+      default:
+        break;
+    }
+
+    if (errorMesg) {
+      var body =  '<p class="resultsDialog__bodyCopy">' + errorMesg + '</p>';
       this.showDialog(body);
       return;
     }
