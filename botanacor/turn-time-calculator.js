@@ -99,7 +99,23 @@ var calculator = {
       'AFTER 10:30AM': {
         'STANDARD': 6,
       },
-    }
+    },
+    'PESTICIDES': {
+      'BEFORE 10:30AM': {
+        'STANDARD': 5,
+      },
+      'AFTER 10:30AM': {
+        'STANDARD': 6,
+      },
+    },
+    'HEAVY METALS': {
+      'BEFORE 10:30AM': {
+        'STANDARD': 7,
+      },
+      'AFTER 10:30AM': {
+        'STANDARD': 8,
+      },
+    },
   },
 
   testType: null,
@@ -186,8 +202,16 @@ var calculator = {
   },
 
   canSelectTurnAroundTime: function() {
-    return (this.testType !== this.TEST_TYPES.TERPENES
-            && this.testType !== this.TEST_TYPES.MICROBIALS);
+    switch (this.testType) {
+      case this.TEST_TYPES['HEAVY METALS']:
+      case this.TEST_TYPES.MICROBIALS:
+      case this.TEST_TYPES.PESTICIDES:
+      case this.TEST_TYPES.TERPENES:
+        return false;
+
+      default:
+        return true;
+    }
   },
 
   getNextDayOfWeek: function(resultsDate) {
@@ -397,14 +421,6 @@ var calculatorBehavior = {
     var newTestType = jQuery(e.target).closest('a.nectar-button').find('span').text();
 
     switch (newTestType) {
-      case calculator.TEST_TYPES.PESTICIDES:
-        errorMesg = 'Pesticide Screening is coming soon.';
-        break;
-
-      case calculator.TEST_TYPES['HEAVY METALS']:
-        errorMesg = 'Heavy Metal Testing is coming soon.';
-        break;
-
       case calculator.TEST_TYPES.MYCOTOXINS:
         errorMesg = 'Mycotoxin Testing is coming soon.';
         break;
