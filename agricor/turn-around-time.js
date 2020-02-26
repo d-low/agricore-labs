@@ -1,5 +1,6 @@
 var calculator = {
   TEST_TYPES: {
+    'HEAVY METALS': 'HEAVY METALS',
     MICROBIAL: 'MICROBIAL',
     PESTICIDES: 'PESTICIDES',
     POTENCY: 'POTENCY',
@@ -15,15 +16,52 @@ var calculator = {
     'SAME DAY': 'SAME DAY',
     'NEXT DAY': 'NEXT DAY',
     'TWO DAY': 'TWO DAY',
+    'THREE DAY': 'THREE DAY',
     'FOUR DAY': 'FOUR DAY'
   },
 
   PICKUP_DAY: {
+    'HEAVY METALS': {
+      'BEFORE 10:30AM': {
+        1: {
+          'THREE DAY' : 3
+        },
+        2: {
+          'THREE DAY' : 3
+        },
+        3: {
+          'THREE DAY' : 5
+        },
+        4: {
+          'THREE DAY' : 6
+        },
+        5: {
+          'THREE DAY' : 0
+        }
+      }, // end HEAVY METALS - BEFORE 10:30AM
+      'AFTER 10:30AM': {
+        1: {
+          'THREE DAY' : 4
+        },
+        2: {
+          'THREE DAY' : 5
+        },
+        3: {
+          'THREE DAY' : 6
+        },
+        4: {
+          'THREE DAY' : 0
+        },
+        5: {
+          'THREE DAY' : 3
+        }
+      }, // end HEAVY METALS - AFTER 10:30AM
+    }, // end HEAVY METALS
     'MICROBIAL': {
       'BEFORE 10:30AM': {
         1: {
           'FOUR DAY' : 4
-        }, 
+        },
         2: {
           'FOUR DAY' : 5
         },
@@ -40,7 +78,7 @@ var calculator = {
       'AFTER 10:30AM': {
         1: {
           'FOUR DAY' : 5
-        }, 
+        },
         2: {
           'FOUR DAY' : 6
         },
@@ -61,7 +99,7 @@ var calculator = {
           'TWO DAY' : 3,
           'NEXT DAY' : 2,
           'SAME DAY': 1
-        }, 
+        },
         2: {
           'TWO DAY' : 4,
           'NEXT DAY' : 3,
@@ -88,7 +126,7 @@ var calculator = {
           'TWO DAY' : 4,
           'NEXT DAY' : 3,
           'SAME DAY': 2
-        }, 
+        },
         2: {
           'TWO DAY' : 5,
           'NEXT DAY' : 4,
@@ -117,7 +155,7 @@ var calculator = {
           'TWO DAY' : 3,
           'NEXT DAY' : 2,
           'SAME DAY': 1
-        }, 
+        },
         2: {
           'TWO DAY' : 4,
           'NEXT DAY' : 3,
@@ -144,7 +182,7 @@ var calculator = {
           'TWO DAY' : 4,
           'NEXT DAY' : 3,
           'SAME DAY': 2
-        }, 
+        },
         2: {
           'TWO DAY' : 5,
           'NEXT DAY' : 4,
@@ -173,7 +211,7 @@ var calculator = {
         1: {
           'TWO DAY' : 3,
           'NEXT DAY' : 2
-        }, 
+        },
         2: {
           'TWO DAY' : 4,
           'NEXT DAY' : 3
@@ -195,7 +233,7 @@ var calculator = {
         1: {
           'TWO DAY' : 4,
           'NEXT DAY' : 3
-        }, 
+        },
         2: {
           'TWO DAY' : 5,
           'NEXT DAY' : 4
@@ -224,10 +262,10 @@ var calculator = {
   /**
    * @description Use pickup day look up table to find the day of the week
    * that the test will be ready. If the day of the week that the test will
-   * be ready is less than the current day of the week then it'll be ready 
+   * be ready is less than the current day of the week then it'll be ready
    * next week.
    */
-  calculate: function() { 
+  calculate: function() {
     if (!this.canCalculate(true)) {
       return;
     }
@@ -235,7 +273,7 @@ var calculator = {
     var resultsDate = null;
     var dropOffDayOfWeek = this.dropOffDate.getDay();
     var pickUpDay = this.PICKUP_DAY[this.testType][this.submissionTime][dropOffDayOfWeek][this.turnAroundTime];
-    
+
     if (pickUpDay < dropOffDayOfWeek) {
       resultsDate = this.getNextDayOfWeek(this.dropOffDate, pickUpDay);
     }
@@ -244,11 +282,11 @@ var calculator = {
         this.dropOffDate.getTime() + ((pickUpDay - dropOffDayOfWeek) * 86400000)
       );
     }
-    
+
     return resultsDate;
   },
 
-  canCalculate: function(throwError) { 
+  canCalculate: function(throwError) {
     var canCalculate = true;
     var errorMesg = '';
 
@@ -263,7 +301,7 @@ var calculator = {
     else if (this.submissionTime &&
              Object.keys(
               this.SUBMISSION_TIMES
-             ).indexOf(this.submissionTime) === -1) { 
+             ).indexOf(this.submissionTime) === -1) {
       errorMesg = 'Please specify a submission time.';
     }
     else if (this.turnAroundTime &&
@@ -277,14 +315,14 @@ var calculator = {
       canCalculate = false;
     }
 
-    if (errorMesg && throwError) { 
+    if (errorMesg && throwError) {
       throw new Error(errorMesg);
     }
 
     return canCalculate;
   },
 
-  canSelectTurnAroundTime: function() { 
+  canSelectTurnAroundTime: function() {
     return (this.testType === this.TEST_TYPES.POTENCY || this.testType === this.TEST_TYPES.PESTICIDES);
   },
 
@@ -298,15 +336,15 @@ var calculator = {
   }
 };
 
-/** 
- * @description Control UI/UX depending on which type of test is selected. 
+/**
+ * @description Control UI/UX depending on which type of test is selected.
  */
 var calculatorBehavior = {
 
   // ----------------------------------------------------------------------
   // Data Members
   // ----------------------------------------------------------------------
-  
+
   dropOffDate: [],
   dropOffTime: [],
   turnAroundTime: [],
@@ -321,7 +359,7 @@ var calculatorBehavior = {
   // Initialization Methods
   // ----------------------------------------------------------------------
 
-  init: function() { 
+  init: function() {
     if (window.location.href.match('turn-around-time')) {
       this.addStyles();
       this.bindEvents();
@@ -333,7 +371,7 @@ var calculatorBehavior = {
    * @description Add styles dynamically so that only one JS file needs to
    * be uploaded to the server to support the custom UI elements.
    */
-  addStyles: function() { 
+  addStyles: function() {
     jQuery('body').append([
       '<style type="text/css">',
         '.fusion-button.selected { ',
@@ -420,11 +458,11 @@ var calculatorBehavior = {
   /**
    * @description Get test type buttons and bind onclick handlers
    */
-  bindEvents: function() { 
+  bindEvents: function() {
     for (var testType in calculator.TEST_TYPES) {
-      this.testTypeButtons[testType] = jQuery('a.fusion-button[title=' + testType + ']');
+      this.testTypeButtons[testType] = jQuery('a.fusion-button[title="' + testType + '"]');
       this.testTypeButtons[testType].on(
-        'click', 
+        'click',
         jQuery.proxy(this.testTypeButton_click, this)
       );
     }
@@ -443,7 +481,7 @@ var calculatorBehavior = {
         'a.fusion-button[title="' + submissionTime + '"]'
       );
       this.submissionTimeButtons[submissionTime].on(
-        'click', 
+        'click',
         jQuery.proxy(this.submissionTimeButton_click, this)
       );
     }
@@ -453,7 +491,7 @@ var calculatorBehavior = {
         'a.fusion-button[title="' + turnAroundTime + '"]'
       );
       this.turnAroundTimeButtons[turnAroundTime].on(
-        'click', 
+        'click',
         jQuery.proxy(this.turnAroundTimeButton_click, this)
       );
     }
@@ -466,7 +504,7 @@ var calculatorBehavior = {
    * @description Get the drop off date, drop off time and turn around time
    * elements
    */
-  getStepElements: function() { 
+  getStepElements: function() {
     var dropOffDateActions = jQuery('#drop-off-date').closest('.fusion-fullwidth');
     var dropOffDateSeparator = dropOffDateActions.prev();
     var dropOffDateHeader = dropOffDateSeparator.prev();
@@ -499,7 +537,7 @@ var calculatorBehavior = {
       enterActions, enterSeparator, enterHeader
     );
 
-    this.enter.forEach(function(el) { 
+    this.enter.forEach(function(el) {
       el.hide();
     });
   },
@@ -510,7 +548,7 @@ var calculatorBehavior = {
   // ----------------------------------------------------------------------
 
   /**
-   * @description When selecting a test type we first unselect the 
+   * @description When selecting a test type we first unselect the
    * previously selected test type, select the new one, show/hide steps 3
    * and 4 as appropriate and scroll to the next step.
    */
@@ -549,7 +587,10 @@ var calculatorBehavior = {
     else {
       this.turnAroundTime.forEach(function(el) { el.hide(); });
 
-      if (calculator.testType === calculator.TEST_TYPES.MICROBIAL) {
+      if (calculator.testType === calculator.TEST_TYPES['HEAVY METALS']) {
+        calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['THREE DAY'];
+      }
+      else if (calculator.testType === calculator.TEST_TYPES.MICROBIAL) {
         calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['FOUR DAY'];
       }
       else if (calculator.testType === calculator.TEST_TYPES.RESIDUAL) {
@@ -561,7 +602,7 @@ var calculatorBehavior = {
     }
   },
 
-  dropOffDate_select: function() { 
+  dropOffDate_select: function() {
     calculator.dropOffDate = jQuery('#drop-off-date').datepicker('getDate');
     this.scrollToEl(this.dropOffTime[0]);
   },
@@ -571,9 +612,9 @@ var calculatorBehavior = {
     e.stopImmediatePropagation();
 
     var newSubmissionTime = jQuery(e.target).closest('.fusion-button').attr('title');
-      
+
     this.selectSubmissionTime(newSubmissionTime);
-    
+
     if (calculator.canSelectTurnAroundTime()) {
       this.scrollToEl(this.turnAroundTime[0]);
     }
@@ -591,12 +632,12 @@ var calculatorBehavior = {
     calculator.submissionTime = newSubmissionTime;
   },
 
-  turnAroundTimeButton_click: function(e) { 
+  turnAroundTimeButton_click: function(e) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
     var newTurnAroundTime = jQuery(e.target).closest('.fusion-button').attr('title');
-      
+
     this.selectTurnAroundTime(newTurnAroundTime);
     this.showPickUpDate();
   },
@@ -618,13 +659,13 @@ var calculatorBehavior = {
     var header = jQuery('.turn-time p:first span');
     var body = jQuery('.turn-time p:last span');
 
-    try { 
+    try {
       var readyOnDate = calculator.calculate();
 
       header.html('Your expected turn-time');
       body.html([
         'Your',
-        calculator.testType.toLowerCase(), 
+        calculator.testType.toLowerCase(),
         'results will be available by end of day on:',
         '<br />',
         '<strong class="pick-up-date">',
@@ -643,15 +684,15 @@ var calculatorBehavior = {
   // Miscellaneous Methods
   // ----------------------------------------------------------------------
 
-  /** 
-   * @description Scroll to requested element using an easing transition 
+  /**
+   * @description Scroll to requested element using an easing transition
    * and request animation frame.
    * @param el The element on the page to scroll to.
    * @param duration Optional animation duration in seconds
    * @see http://stackoverflow.com/questions/8917921/cross-browser-javascript-not-jquery-scroll-to-top-animation#26808520
    * @see https://github.com/danro/easing-js/blob/master/easing.js
    */
-  scrollToEl: function(el, duration) {   
+  scrollToEl: function(el, duration) {
     var currentTime = 0;
     var easingEquations = {
       easeOutSine: function(pos) {
@@ -670,7 +711,7 @@ var calculatorBehavior = {
     };
     var fusionHeaderWrapper = jQuery('.fusion-header-wrapper');
     var scrollTargetY = el.offset().top;
-    var scrollY = window.pageYOffset;   
+    var scrollY = window.pageYOffset;
 
     // TODO: There is an edge case where if we're at the top of the page
     // the header is not yet sticky then the fusion-is-sticky class won't
@@ -678,8 +719,8 @@ var calculatorBehavior = {
     // because the fusion-is-sticky class will be added after we animate
     // the scroll position here. A good way to work around this would be to
     // check to see if the fusion-is-sticky class is present 100px into the
-    // scroll and if so recalculate the scrollTargetY then! 
-    
+    // scroll and if so recalculate the scrollTargetY then!
+
     if (fusionHeaderWrapper.is('.fusion-is-sticky')) {
       scrollTargetY = scrollTargetY - jQuery('.fusion-header').height();
     }
@@ -697,7 +738,7 @@ var calculatorBehavior = {
       if (p < 1) {
         window.requestAnimationFrame(tick);
         window.scrollTo(0, scrollY + ((scrollTargetY - scrollY) * t));
-      } 
+      }
       else {
         window.scrollTo(0, scrollTargetY);
       }
@@ -711,4 +752,3 @@ var calculatorBehavior = {
 jQuery(document).ready(function() {
   calculatorBehavior.init();
 });
-  
