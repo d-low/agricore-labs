@@ -16,44 +16,44 @@ var calculator = {
     'SAME DAY': 'SAME DAY',
     'NEXT DAY': 'NEXT DAY',
     'TWO DAY': 'TWO DAY',
-    'THREE DAY': 'THREE DAY',
-    'FOUR DAY': 'FOUR DAY'
+    'FOUR DAY': 'FOUR DAY',
+    'FIVE DAY': 'FIVE DAY',
   },
 
   PICKUP_DAY: {
     'HEAVY METALS': {
       'BEFORE 10:30AM': {
         1: {
-          'THREE DAY' : 3
+          'FIVE DAY' : 1
         },
         2: {
-          'THREE DAY' : 3
+          'FIVE DAY' : 2
         },
         3: {
-          'THREE DAY' : 5
+          'FIVE DAY' : 3
         },
         4: {
-          'THREE DAY' : 6
+          'FIVE DAY' : 4
         },
         5: {
-          'THREE DAY' : 0
+          'FIVE DAY' : 5
         }
       }, // end HEAVY METALS - BEFORE 10:30AM
       'AFTER 10:30AM': {
         1: {
-          'THREE DAY' : 4
+          'FIVE DAY' : 2
         },
         2: {
-          'THREE DAY' : 5
+          'FIVE DAY' : 3
         },
         3: {
-          'THREE DAY' : 6
+          'FIVE DAY' : 4
         },
         4: {
-          'THREE DAY' : 0
+          'FIVE DAY' : 5
         },
         5: {
-          'THREE DAY' : 3
+          'FIVE DAY' : 1
         }
       }, // end HEAVY METALS - AFTER 10:30AM
     }, // end HEAVY METALS
@@ -274,7 +274,10 @@ var calculator = {
     var dropOffDayOfWeek = this.dropOffDate.getDay();
     var pickUpDay = this.PICKUP_DAY[this.testType][this.submissionTime][dropOffDayOfWeek][this.turnAroundTime];
 
-    if (pickUpDay < dropOffDayOfWeek) {
+    if (this.testType === this.TEST_TYPES['HEAVY METALS']) {
+      resultsDate = this.getHeavyMetalsDate(this.dropOffDate, pickUpDay);
+    }
+    else if (pickUpDay < dropOffDayOfWeek) {
       resultsDate = this.getNextDayOfWeek(this.dropOffDate, pickUpDay);
     }
     else {
@@ -324,6 +327,26 @@ var calculator = {
 
   canSelectTurnAroundTime: function() {
     return (this.testType === this.TEST_TYPES.POTENCY || this.testType === this.TEST_TYPES.PESTICIDES);
+  },
+
+  /**
+   * @description These are special cases of custom calculations that are
+   * applicable only to the Heavy Metals test.
+   */
+  getHeavyMetalsDate: function(dropOffDate, pickUpDayOfWeek) {
+    var msPerDay = 24 * 60 * 60 * 1000;
+    var dropOffDayOfWeek = dropOffDate.getDay();
+
+    if (dropOffDayOfWeek === pickUpDayOfWeek) {
+      // Same day next week
+      return new Date(dropOffDate.getTime() + (7 * msPerDay));
+    } else if (dropOffDayOfWeek  < pickUpDayOfWeek)  {
+      // Next day next week
+      return new Date(dropOffDate.getTime() + (8 * msPerDay));
+    } else {
+      // Friday after 10:30am is ready on Monday in two weeks
+      return new Date(dropOffDate.getTime() + (10 * msPerDay));
+    }
   },
 
   /**
@@ -588,7 +611,7 @@ var calculatorBehavior = {
       this.turnAroundTime.forEach(function(el) { el.hide(); });
 
       if (calculator.testType === calculator.TEST_TYPES['HEAVY METALS']) {
-        calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['THREE DAY'];
+        calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['FIVE DAY'];
       }
       else if (calculator.testType === calculator.TEST_TYPES.MICROBIAL) {
         calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['FOUR DAY'];
