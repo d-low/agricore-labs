@@ -2,6 +2,8 @@
   var $ = window.$ || jQuery;
   var CBD = 'cbd';
   var THC = 'thc';
+  var passed = '#339966';
+  var failed = '#ff0000';
 
   function initElements() {
     return {
@@ -123,6 +125,13 @@
     // Display mean, relative standard deviation, and standard deviation in test results table
     calculatorResults.$mean.text(this.results[testType].mean);
     calculatorResults.$relStdDev.text(this.results[testType].relStdDev + '%');
+
+    if (this.results[testType].relStdDev >= 10) {
+      calculatorResults.$relStdDev.css('color', failed);
+    } else {
+      calculatorResults.$relStdDev.css('color', '');
+    }
+
     calculatorResults.$stdDev.text(this.results[testType].stdDev);
   };
 
