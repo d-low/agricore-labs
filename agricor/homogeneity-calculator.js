@@ -23,6 +23,7 @@
   function initResults() {
     return {
       mean: undefined,
+      percentVariance: undefined,
       relStdDev: undefined,
       stdDev: undefined,
     };
@@ -90,10 +91,15 @@
   };
 
   HomogeneityCalculator.prototype.calculate = function(testType) {
+    var isValueNumeric = function($el) {
+      return !!($el.val() && !isNaN(Number($el.val())));
+    };
+
+    var labelClaim = isValueNumeric(this.elements[testType].$labelClaim) ?
+      Number(this.elements[testType].$labelClaim.val()) : undefined;
+
     // Ignore test result inputs with non-numeric values (for now?)
-    var $validTestResults = this.elements[testType].$testResults.filter(function($testResult) {
-      return !!($testResult.val() && !isNaN(Number($testResult.val())));
-    });
+    var $validTestResults = this.elements[testType].$testResults.filter(isValueNumeric);
 
     var numbers = $validTestResults.map(function($validTestResult) {
       return Number($validTestResult.val());
@@ -110,6 +116,12 @@
     this.results[testType].mean = mean.toFixed(2);
     this.results[testType].stdDev = Math.sqrt(meanOfSquaredDifferences).toFixed(2);
     this.results[testType].relStdDev = ((this.results[testType].stdDev * 100) / mean).toFixed(2);
+
+    if (labelClaim !== undefined) {
+      this.results[testType].percentVariance = ((labelClaim - mean) / labelClaim * 100).toFixed(2);
+    } else {
+      this.results[testType].percentVariance = undefined;
+    }
   };
 
   HomogeneityCalculator.prototype.displayCalculatorResults = function(testType) {
