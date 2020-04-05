@@ -29,6 +29,10 @@
     };
   }
 
+  function isValueNumeric($el) {
+    return !!($el.val() && !isNaN(Number($el.val())));
+  }
+
   function HomogeneityCalculator() {
     this.elements = {};
     this.elements[CBD] = initElements();
@@ -91,10 +95,6 @@
   };
 
   HomogeneityCalculator.prototype.calculate = function(testType) {
-    var isValueNumeric = function($el) {
-      return !!($el.val() && !isNaN(Number($el.val())));
-    };
-
     var labelClaim = isValueNumeric(this.elements[testType].$labelClaim) ?
       Number(this.elements[testType].$labelClaim.val()) : undefined;
 
@@ -125,18 +125,28 @@
   };
 
   HomogeneityCalculator.prototype.displayCalculatorResults = function(testType) {
+    var labelClaim = isValueNumeric(this.elements[testType].$labelClaim) ?
+      Number(this.elements[testType].$labelClaim.val()) : undefined;
+
     var calculatorResults = this.elements[testType].calculatorResults;
 
-    // Display valid test result nubmers in test results table
+    // Calculate the percent variance for each valid test result and display in test results table
     this.elements[testType].$testResults.forEach(function($testResult, index) {
-      if (!isNaN(Number($testResult.val()))) {
-        calculatorResults.$testResults[index].text($testResult.val());``
+      if (isValueNumeric($testResult) && labelClaim !== undefined) {
+        var testResult = Number($testResult.val());
+        var percentVariance = (((testResult - labelClaim) / labelClaim) * 100).toFixed(2);
+        calculatorResults.$testResults[index].text(percentVariance + '%');
       }
-    }.bind(this));
+    });
 
     // Display mean, relative standard deviation, and standard deviation in test results table
-    calculatorResults.$mean.text(this.results[testType].mean);
-    calculatorResults.$relStdDev.text(this.results[testType].relStdDev + '%');
+    if (!isNaN(this.results[testType].mean)) {
+      calculatorResults.$mean.text(this.results[testType].mean);
+    }
+
+    if (!isNaN(this.results[testType].relStdDev)) {
+      calculatorResults.$relStdDev.text(this.results[testType].relStdDev + '%');
+    }
 
     if (this.results[testType].relStdDev >= 10) {
       calculatorResults.$relStdDev.css('color', failed);
@@ -144,7 +154,9 @@
       calculatorResults.$relStdDev.css('color', '');
     }
 
-    calculatorResults.$stdDev.text(this.results[testType].stdDev);
+    if (!isNaN(this.results[testType].stdDev)) {
+      calculatorResults.$stdDev.text(this.results[testType].stdDev);
+    }
   };
 
   $(document).ready(function() {
