@@ -135,7 +135,14 @@
       if (isValueNumeric($testResult) && labelClaim !== undefined) {
         var testResult = Number($testResult.val());
         var percentVariance = (((testResult - labelClaim) / labelClaim) * 100).toFixed(2);
+
         calculatorResults.$testResults[index].text(percentVariance + '%');
+
+        if (Math.abs(percentVariance) >= 15) {
+          calculatorResults.$testResults[index].css('color', failed);
+        } else {
+          calculatorResults.$testResults[index].css('color', '');
+        }
       }
     });
 
