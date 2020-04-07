@@ -9,13 +9,16 @@
     return {
       $labelClaim: null,
       $testResults: [],
-      $enterButton: null,
       calculatorResults: {
         $mean: null,
         $stdDev: null,
         $relStdDev: null,
         $testResults: [],
-        $testResult: null,
+        $testResultCopy: null,
+        $testResultSuccess: null,
+        $testResultFailure: null,
+        $testResultSuccessDetails: null,
+        $testResultFailureDetails: null,
       },
     };
   }
@@ -64,8 +67,6 @@
         column.$testResults[i] = $column.find('.input-test-results .test-result-' + i);
       }
 
-      column.$enterButton = $column.find('.enter-button');
-
       var $calculatorResults = $column.find('.calculator-results-table');
 
       column.calculatorResults.$mean = $calculatorResults.find('.mean');
@@ -76,11 +77,27 @@
         column.calculatorResults.$testResults[i] = $calculatorResults.find('.test-result-' + i);
       }
 
-      column.calculatorResults.$testResult = $column.find('.test-result');
+      column.calculatorResults.$testResultCopy = $column.find('.test-result-copy');
+      column.calculatorResults.$testResultSuccess = $column.find('.test-result-success');
+      column.calculatorResults.$testResultFailure = $column.find('.test-result-failure');
+      column.calculatorResults.$testResultSuccessDetails = $column.find('.test-result-success-details');
+      column.calculatorResults.$testResultFailureDetails = $column.find('.test-result-failure-details');
     }.bind(this));
   };
 
   HomogeneityCalculator.prototype.applyBehavior = function() {
+    // TODO: Use this event handler when calculate() has been updated as described
+    // below.
+    // var handleChange = function(testType) {
+    //   var didCalculate = this.calculate(testType);
+
+    //   if (didCalculate) {
+    //     this.displayCalculatorResults(testType);
+    //   } else {
+    //     this.clearCalculatorResults(testType);
+    //   }
+    // }.bind(this);
+
     var handleChange = function(testType) {
       this.calculate(testType);
       this.displayCalculatorResults(testType);
@@ -94,6 +111,12 @@
     }.bind(this));
   };
 
+  /**
+   * @todo
+   * 1. Only calculate results if a label claim and four test results were entered.
+   * 2. Return true/false to indicate to caller whether calculation was performed.
+   * 3. Calculate test result percent variance and save to results fields.
+   */
   HomogeneityCalculator.prototype.calculate = function(testType) {
     var labelClaim = isValueNumeric(this.elements[testType].$labelClaim) ?
       Number(this.elements[testType].$labelClaim.val()) : undefined;
@@ -124,15 +147,23 @@
     }
   };
 
+  /**
+   * @todo Modify this method to only _show_ calculator results. It will only be
+   * called when calculations were performed.
+   */
   HomogeneityCalculator.prototype.displayCalculatorResults = function(testType) {
     var labelClaim = isValueNumeric(this.elements[testType].$labelClaim) ?
       Number(this.elements[testType].$labelClaim.val()) : undefined;
 
     var calculatorResults = this.elements[testType].calculatorResults;
+    var validTestResultsCount = 0;
+    var failedTestResultsCount = 0;
 
     // Calculate the percent variance for each valid test result and display in test results table
     this.elements[testType].$testResults.forEach(function($testResult, index) {
       if (isValueNumeric($testResult) && labelClaim !== undefined) {
+        validTestResultsCount += 1;
+
         var testResult = Number($testResult.val());
         var percentVariance = (((testResult - labelClaim) / labelClaim) * 100).toFixed(2);
 
@@ -140,6 +171,7 @@
 
         if (Math.abs(percentVariance) >= 15) {
           calculatorResults.$testResults[index].css('color', failed);
+          failedTestResultsCount += 1;
         } else {
           calculatorResults.$testResults[index].css('color', '');
         }
@@ -164,6 +196,38 @@
     if (!isNaN(this.results[testType].stdDev)) {
       calculatorResults.$stdDev.text(this.results[testType].stdDev);
     }
+
+    // Display overall test result summary if all four test results and a label claim
+    // were entered.
+    if (validTestResultsCount === 4 && typeof labelClaim !== 'undefined') {
+      calculatorResults.$testResultCopy.show();
+
+      if (failedTestResultsCount > 0 || this.results[testType].relStdDev >= 10) {
+        calculatorResults.$testResultFailure.show();
+        calculatorResults.$testResultFailureDetails.show();
+        calculatorResults.$testResultSuccess.hide();
+        calculatorResults.$testResultSuccessDetails.hide();
+      } else {
+        calculatorResults.$testResultFailure.hide();
+        calculatorResults.$testResultFailureDetails.hide();
+        calculatorResults.$testResultSuccess.show();
+        calculatorResults.$testResultSuccessDetails.show();
+      }
+    } else {
+      calculatorResults.$testResultCopy.hide();
+      calculatorResults.$testResultFailure.hide();
+      calculatorResults.$testResultFailureDetails.hide();
+      calculatorResults.$testResultSuccess.hide();
+      calculatorResults.$testResultSuccessDetails.hide();
+    }
+  };
+
+  /**
+   * @todo Clear/hide test results in this method.
+   */
+  HomogeneityCalculator.prototype.clearCalculatorResults = function(testType) {
+    var calculatorResults = this.elements[testType].calculatorResults;
+    // TODO:
   };
 
   $(document).ready(function() {
