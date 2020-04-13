@@ -129,16 +129,22 @@
     });
 
     if (labelClaim && haveFourTestResults) {
+      var sampleSize = testResults.length;
+
       var mean = testResults.reduce(function(acc, testResult) {
         return acc + testResult;
-      }, 0) / testResults.length;
+      }, 0) / sampleSize;
 
-      var meanOfSquaredDifferences = testResults.reduce(function(acc, testResult) {
-        return acc + Math.pow(testResult - mean, 2);
-      }, 0) / testResults.length;
+      var stdDev = Math.sqrt(testResults
+        .map(function(testResult) {
+          return Math.pow(testResult - mean, 2);
+        })
+        .reduce(function(a, b) {
+          return a + b;
+        }) / (sampleSize - 1));
 
       this.results[testType].mean = mean.toFixed(2);
-      this.results[testType].stdDev = Math.sqrt(meanOfSquaredDifferences).toFixed(2);
+      this.results[testType].stdDev = stdDev.toFixed(2);
       this.results[testType].relStdDev = ((this.results[testType].stdDev * 100) / mean).toFixed(2);
       this.results[testType].percentVariance = ((labelClaim - mean) / labelClaim * 100).toFixed(2);
 
