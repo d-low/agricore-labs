@@ -166,7 +166,7 @@
     outputs.$stdDev.text(this.results[testType].stdDev);
     outputs.$relStdDev.text(this.results[testType].relStdDev + '%');
 
-    if (this.results[testType].relStdDev >= 10) {
+    if (this.results[testType].relStdDev > 10) {
       outputs.$relStdDev.css('color', failed);
     } else {
       outputs.$relStdDev.css('color', '');
@@ -177,7 +177,7 @@
     this.results[testType].testResults.forEach(function(testResult, index) {
       outputs.$testResults[index].text(testResult + '%');
 
-      if (Math.abs(testResult) >= 15) {
+      if (Math.abs(testResult) > 15) {
         outputs.$testResults[index].css('color', failed);
         failedTestResultsCount += 1;
       } else {
@@ -187,7 +187,7 @@
 
     outputs.$testResultCopy.show();
 
-    if (failedTestResultsCount > 0 || this.results[testType].relStdDev >= 10) {
+    if (failedTestResultsCount > 0 || this.results[testType].relStdDev > 10) {
       outputs.$testResultFailure.show();
       outputs.$testResultFailureDetails.show();
       outputs.$testResultSuccess.hide();
