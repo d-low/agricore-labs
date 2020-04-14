@@ -45,6 +45,71 @@
     return undefined;
   }
 
+  /**
+   * @description Scroll to requested element using an easing transition
+   * and request animation frame.
+   * @param $el The jQuery element on the page to scroll to.
+   * @param duration Optional animation duration in seconds
+   * @see http://stackoverflow.com/questions/8917921/cross-browser-javascript-not-jquery-scroll-to-top-animation#26808520
+   * @see https://github.com/danro/easing-js/blob/master/easing.js
+   */
+  function scrollToEl($el, duration) {
+    var currentTime = 0;
+    var easingEquations = {
+      easeOutSine: function(pos) {
+        return Math.sin(pos * (Math.PI / 2));
+      },
+      easeInOutSine: function(pos) {
+        return (-0.5 * (Math.cos(Math.PI * pos) - 1));
+      },
+      easeInOutQuint: function(pos) {
+        if ((pos /= 0.5) < 1) {
+          return 0.5 * Math.pow(pos, 5);
+        }
+
+        return 0.5 * (Math.pow((pos - 2), 5) + 2);
+      }
+    };
+
+    var $fusionHeaderWrapper = $('.fusion-header-wrapper');
+    var scrollTargetY = $el.offset().top;
+    var scrollY = window.pageYOffset;
+
+    // TODO: There is an edge case where if we're at the top of the page
+    // the header is not yet sticky then the fusion-is-sticky class won't
+    // yet be applied so we won't end up scrolling to the properly location
+    // because the fusion-is-sticky class will be added after we animate
+    // the scroll position here. A good way to work around this would be to
+    // check to see if the fusion-is-sticky class is present 100px into the
+    // scroll and if so recalculate the scrollTargetY then!
+
+    if ($fusionHeaderWrapper.is('.fusion-is-sticky')) {
+      scrollTargetY = scrollTargetY - $('.fusion-header').height();
+    }
+
+    scrollTargetY = typeof scrollTargetY === 'undefined' ? 0 : scrollTargetY;
+    duration = duration || 0.5;
+
+    // Add animation loop
+    function tick() {
+      currentTime += 1 / 60;
+
+      var p = currentTime / duration;
+      var t = easingEquations['easeOutSine'](p);
+
+      if (p < 1) {
+        window.requestAnimationFrame(tick);
+        window.scrollTo(0, scrollY + ((scrollTargetY - scrollY) * t));
+      }
+      else {
+        window.scrollTo(0, scrollTargetY);
+      }
+    }
+
+    // Call it once to get started
+    tick();
+  }
+
   function HomogeneityCalculator() {
     this.elements = {};
     this.elements[CBD] = initElements();
@@ -95,11 +160,19 @@
   };
 
   HomogeneityCalculator.prototype.applyBehavior = function() {
-    var handleChange = function(testType) {
+    var handleChange = function(testType, $el) {
       var didCalculate = this.calculate(testType);
 
       if (didCalculate) {
         this.displayCalculatorResults(testType);
+
+        var column = this.elements[testType];
+
+        if ($el && $el.get(0) === column.inputs.$testResults[3].get(0)) {
+          // Scroll to the test result copy if the value of the last input was
+          // changed so that the user can view the test results.
+          scrollToEl(column.outputs.$testResultCopy);
+        }
       } else {
         this.clearCalculatorResults(testType);
       }
@@ -110,7 +183,7 @@
 
       inputs.$labelClaim.on('change', function() { handleChange(testType); });
       inputs.$testResults.forEach(function($testResult) {
-        $testResult.on('change', function() { handleChange(testType); });
+        $testResult.on('change', function(e) { handleChange(testType, $(e.target)); });
       });
     }.bind(this));
   };
