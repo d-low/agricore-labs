@@ -169,9 +169,11 @@
         var column = this.elements[testType];
 
         if ($el && $el.get(0) === column.inputs.$testResults[3].get(0)) {
-          // Scroll to the test result copy if the value of the last input was
-          // changed so that the user can view the test results.
-          scrollToEl(column.outputs.$testResultCopy);
+          // Scroll to the test result copy if the value of the last input was changed so that the
+          // user can view the test results.
+          window.setTimeout(function () {
+            scrollToEl(column.outputs.$testResultCopy);
+          }, 0);
         }
       } else {
         this.clearCalculatorResults(testType);
@@ -182,8 +184,20 @@
       var inputs = this.elements[testType].inputs;
 
       inputs.$labelClaim.on('change', function() { handleChange(testType); });
+
       inputs.$testResults.forEach(function($testResult) {
         $testResult.on('change', function(e) { handleChange(testType, $(e.target)); });
+      });
+
+      // When the tab key is pressed on the last input cancel the event, so that focus doesn't go
+      // to the form at the bottom of the page, and trigger a blur event, so that focus is lost and
+      // a change is triggered. This works to prevent the focus from jumping to the form at the
+      // bottom of the page and _then_ scrolling up to the results.
+      inputs.$testResults[3].on('keydown', function(e) {
+        if (e.key === 'Tab' || e.keyCode === 9) {
+          e.preventDefault();
+          $(e.target).blur();
+        }
       });
     }.bind(this));
   };
