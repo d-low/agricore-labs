@@ -253,7 +253,7 @@
     outputs.$stdDev.text(this.results[testType].stdDev);
     outputs.$relStdDev.text(this.results[testType].relStdDev + '%');
 
-    if (this.results[testType].relStdDev > 10) {
+    if (this.results[testType].relStdDev >= 10) {
       outputs.$relStdDev.css('color', failed);
     } else {
       outputs.$relStdDev.css('color', '');
