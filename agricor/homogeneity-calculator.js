@@ -45,6 +45,14 @@
     return undefined;
   }
 
+  function toTwoSigFigs(num) {
+    try {
+      return num.toString().match(/^\d+.\d\d/)[0]
+    } catch(exp) {
+      return String(num);
+    }
+  }
+
   /**
    * @description Scroll to requested element using an easing transition
    * and request animation frame.
@@ -230,14 +238,14 @@
           return a + b;
         }) / (sampleSize - 1));
 
-      this.results[testType].mean = mean.toFixed(2);
-      this.results[testType].stdDev = stdDev.toFixed(2);
-      this.results[testType].relStdDev = ((this.results[testType].stdDev * 100) / mean).toFixed(2);
-      this.results[testType].percentVariance = ((labelClaim - mean) / labelClaim * 100).toFixed(2);
+      this.results[testType].mean = toTwoSigFigs(mean);
+      this.results[testType].stdDev = toTwoSigFigs(stdDev);
+      this.results[testType].relStdDev = toTwoSigFigs((this.results[testType].stdDev * 100) / mean)
+      this.results[testType].percentVariance = toTwoSigFigs((labelClaim - mean) / labelClaim * 100);
 
       testResults.forEach(function (testResult, index) {
         this.results[testType].testResults[index] =
-          (((testResult - labelClaim) / labelClaim) * 100).toFixed(2);
+          toTwoSigFigs(((testResult - labelClaim) / labelClaim) * 100);
       }.bind(this));
 
       didCalculate = true;
