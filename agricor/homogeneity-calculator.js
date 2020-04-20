@@ -47,7 +47,24 @@
 
   function toTwoSigFigs(num) {
     try {
-      return num.toString().match(/^\d+.\d\d/)[0]
+      if (num === 0) {
+        return '0.00';
+      }
+
+      var numAsString = num.toString();
+
+      // Positive or negative number with no decimal places
+      if (numAsString.match(/^\d+$/) || numAsString.match(/^-\d+$/)) {
+        return numAsString + '.00';
+      }
+
+      // Postitive or negative number with decimal place
+      if (numAsString.match(/^.+\.\d$/)) {
+        return numAsString + '0';
+      }
+
+      // Positive or negative number with two or more decimal places
+      return numAsString.match(/^.+\.\d\d/)[0];
     } catch(exp) {
       return String(num);
     }
@@ -245,7 +262,7 @@
 
       testResults.forEach(function (testResult, index) {
         this.results[testType].testResults[index] =
-          toTwoSigFigs(((testResult - labelClaim) / labelClaim) * 100);
+          toTwoSigFigs((((testResult - labelClaim) / labelClaim) * 100));
       }.bind(this));
 
       didCalculate = true;
