@@ -257,7 +257,7 @@
 
       this.results[testType].mean = toTwoSigFigs(mean);
       this.results[testType].stdDev = toTwoSigFigs(stdDev);
-      this.results[testType].relStdDev = toTwoSigFigs((this.results[testType].stdDev * 100) / mean)
+      this.results[testType].relStdDev = toTwoSigFigs((stdDev * 100) / mean)
       this.results[testType].percentVariance = toTwoSigFigs((labelClaim - mean) / labelClaim * 100);
 
       testResults.forEach(function (testResult, index) {
