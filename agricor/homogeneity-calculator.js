@@ -45,6 +45,16 @@
     return undefined;
   }
 
+  /**
+   * Utility function to deal with floating point precision in JavaScript with out including a
+   * more robust, external library such as https://mikemcl.github.io/bignumber.js or
+   * https://mathjs.org/
+   * @see https://stackoverflow.com/questions/1458633/how-to-deal-with-floating-point-number-precision-in-javascript#answer-3644302
+   */
+  function strip(number) {
+    return parseFloat(parseFloat(number).toPrecision(15));
+  }
+
   function toTwoSigFigs(num) {
     try {
       if (num === 0) {
@@ -246,6 +256,7 @@
       var mean = testResults.reduce(function(acc, testResult) {
         return acc + testResult;
       }, 0) / sampleSize;
+      mean = strip(mean);
 
       var stdDev = Math.sqrt(testResults
         .map(function(testResult) {
@@ -254,15 +265,23 @@
         .reduce(function(a, b) {
           return a + b;
         }) / (sampleSize - 1));
+      stdDev = strip(stdDev);
+
+      var relStdDev = (stdDev * 100) / mean;
+      relStdDev = strip(relStdDev);
+
+      var percentVariance = (labelClaim - mean) / labelClaim * 100;
+      percentVariance = strip(percentVariance);
 
       this.results[testType].mean = toTwoSigFigs(mean);
       this.results[testType].stdDev = toTwoSigFigs(stdDev);
-      this.results[testType].relStdDev = toTwoSigFigs((stdDev * 100) / mean)
-      this.results[testType].percentVariance = toTwoSigFigs((labelClaim - mean) / labelClaim * 100);
+      this.results[testType].relStdDev = toTwoSigFigs(relStdDev);
+      this.results[testType].percentVariance = toTwoSigFigs(percentVariance);
 
       testResults.forEach(function (testResult, index) {
-        this.results[testType].testResults[index] =
-          toTwoSigFigs((((testResult - labelClaim) / labelClaim) * 100));
+        var testResultCalc = ((testResult - labelClaim) / labelClaim) * 100;
+        testResultCalc = strip(testResultCalc);
+        this.results[testType].testResults[index] = toTwoSigFigs(testResultCalc);
       }.bind(this));
 
       didCalculate = true;
