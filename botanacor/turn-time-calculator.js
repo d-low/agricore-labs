@@ -137,32 +137,37 @@ var calculator = {
     var testDuration = this.TEST_DURATION[this.testType][this.submissionTime][this.turnAroundTime];
     var resultsDate = new Date(dropOffDayNormalized.getTime());
 
-    // Microbial tests dropped of on Friday after 10:30am cannot be processed
-    // until the following Monday with a test duration of 6 days. So reset the
-    // result date to Monday of the following week to begin the calculation.
+    if (this.testType === this.TEST_TYPES.MICROBIALS) {
+      // Microbial tests are performed on Monday only and have a fixed turn time
 
-    if (this.testType === this.TEST_TYPES.MICROBIALS &&
-        this.submissionTime === 'AFTER 10:30AM' &&
-        dropOffDayNormalized.getDay() === 5) {
-      resultsDate = new Date(dropOffDayNormalized.getTime() + (2 * msPerDay));
-    }
+      var testDurations = [
+        undefined, // No drop off on Sunday
+        { 'BEFORE 10:30AM': 3, 'AFTER 10:30AM': 10 },
+        { 'BEFORE 10:30AM': 9, 'AFTER 10:30AM': 9 },
+        { 'BEFORE 10:30AM': 8, 'AFTER 10:30AM': 8 },
+        { 'BEFORE 10:30AM': 7, 'AFTER 10:30AM': 7 },
+        { 'BEFORE 10:30AM': 6, 'AFTER 10:30AM': 6 },
+        undefined // No drop off on Saturday
+      ];
 
-    while (testDuration) {
-      resultsDate = new Date(resultsDate.getTime() + msPerDay);
+      var dayOfWeek = dropOffDayNormalized.getDay();
+      var msPerTest = testDurations[dayOfWeek][this.submissionTime] * msPerDay;
+      resultsDate = new Date(resultsDate.getTime() + msPerTest);
 
-      if (this.testType === this.TEST_TYPES.MICROBIALS) {
-        // Microbial testing happens over the weekend so decrement the test duration.
-        testDuration = testDuration - 1;
+      return resultsDate;
+    } else {
+      while (testDuration) {
+        resultsDate = new Date(resultsDate.getTime() + msPerDay);
+
+        if (resultsDate.getDay() !== 0 && resultsDate.getDay() !== 6) {
+          // All other tests do not occur over the weekend so do not decrement the
+          // test duration if the result date is a Saturday or Sunday
+          testDuration = testDuration - 1;
+        }
       }
-      else if (resultsDate.getDay() !== 0 && resultsDate.getDay() !== 6) {
-        // All other tests do not occur over the weekend so do not decrement the
-        // test duration if the result date is a Saturday or Sunday
-        testDuration = testDuration - 1;
-      }
-    }
 
-    return this.testType === this.TEST_TYPES.MICROBIALS
-      ? resultsDate : this.getNextDayOfWeek(resultsDate);
+      return this.getNextDayOfWeek(resultsDate);
+    }
   },
 
   canCalculate: function(throwError) {
