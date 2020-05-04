@@ -110,10 +110,10 @@ var calculator = {
     },
     'HEAVY METALS': {
       'BEFORE 10:30AM': {
-        'STANDARD': 10,
+        'STANDARD': 5,
       },
       'AFTER 10:30AM': {
-        'STANDARD': 11,
+        'STANDARD': 6,
       },
     },
   },
