@@ -94,10 +94,10 @@ var calculator = {
     },
     'MICROBIALS': {
       'BEFORE 10:30AM': {
-        'STANDARD': 5,
+        'STANDARD': 4,
       },
       'AFTER 10:30AM': {
-        'STANDARD': 6,
+        'STANDARD': 5,
       },
     },
     'PESTICIDES': {
@@ -138,20 +138,10 @@ var calculator = {
     var resultsDate = new Date(dropOffDayNormalized.getTime());
 
     if (this.testType === this.TEST_TYPES.MICROBIALS) {
-      // Microbial tests are performed on Monday only and have a fixed turn time
-
-      var testDurations = [
-        undefined, // No drop off on Sunday
-        { 'BEFORE 10:30AM': 3, 'AFTER 10:30AM': 10 },
-        { 'BEFORE 10:30AM': 9, 'AFTER 10:30AM': 9 },
-        { 'BEFORE 10:30AM': 8, 'AFTER 10:30AM': 8 },
-        { 'BEFORE 10:30AM': 7, 'AFTER 10:30AM': 7 },
-        { 'BEFORE 10:30AM': 6, 'AFTER 10:30AM': 6 },
-        undefined // No drop off on Saturday
-      ];
+      // Microbial tests are made available over the weekend
 
       var dayOfWeek = dropOffDayNormalized.getDay();
-      var msPerTest = testDurations[dayOfWeek][this.submissionTime] * msPerDay;
+      var msPerTest = testDuration * msPerDay;
       resultsDate = new Date(resultsDate.getTime() + msPerTest);
 
       return resultsDate;
