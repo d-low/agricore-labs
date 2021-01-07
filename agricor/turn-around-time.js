@@ -24,56 +24,36 @@ var calculator = {
     'HEAVY METALS': {
       'BEFORE 10:30AM': {
         1: {
-          'FIVE DAY' : 1,
-          'NEXT DAY' : 2,
-          'SAME DAY' : 1,
+          'FOUR DAY' : 4
         },
         2: {
-          'FIVE DAY' : 2,
-          'NEXT DAY' : 3,
-          'SAME DAY' : 2,
+          'FOUR DAY' : 5
         },
         3: {
-          'FIVE DAY' : 3,
-          'NEXT DAY' : 4,
-          'SAME DAY' : 3,
+          'FOUR DAY' : 1
         },
         4: {
-          'FIVE DAY' : 4,
-          'NEXT DAY' : 5,
-          'SAME DAY' : 4,
+          'FOUR DAY' : 2
         },
         5: {
-          'FIVE DAY' : 5,
-          'NEXT DAY' : 1,
-          'SAME DAY' : 5,
+          'FOUR DAY' : 3
         }
       }, // end HEAVY METALS - BEFORE 10:30AM
       'AFTER 10:30AM': {
         1: {
-          'FIVE DAY' : 2,
-          'NEXT DAY' : 3,
-          'SAME DAY' : 2,
+          'FOUR DAY' : 5
         },
         2: {
-          'FIVE DAY' : 3,
-          'NEXT DAY' : 4,
-          'SAME DAY' : 3,
+          'FOUR DAY' : 1
         },
         3: {
-          'FIVE DAY' : 4,
-          'NEXT DAY' : 5,
-          'SAME DAY' : 4,
+          'FOUR DAY' : 2
         },
         4: {
-          'FIVE DAY' : 5,
-          'NEXT DAY' : 1,
-          'SAME DAY' : 5,
+          'FOUR DAY' : 3
         },
         5: {
-          'FIVE DAY' : 1,
-          'NEXT DAY' : 2,
-          'SAME DAY' : 1,
+          'FOUR DAY' : 4
         }
       }, // end HEAVY METALS - AFTER 10:30AM
     }, // end HEAVY METALS
@@ -347,8 +327,7 @@ var calculator = {
 
   canSelectTurnAroundTime: function() {
     if (this.testType === this.TEST_TYPES.POTENCY
-        || this.testType === this.TEST_TYPES.PESTICIDES
-        || this.testType === this.TEST_TYPES['HEAVY METALS']) {
+        || this.testType === this.TEST_TYPES.PESTICIDES) {
       return true;
     }
 
@@ -653,7 +632,8 @@ var calculatorBehavior = {
     else {
       this.turnAroundTime.forEach(function(el) { el.hide(); });
 
-      if (calculator.testType === calculator.TEST_TYPES.MICROBIAL) {
+      if (calculator.testType === calculator.TEST_TYPES.MICROBIAL
+        || calculator.testType === calculator.TEST_TYPES['HEAVY METALS']) {
         calculator.turnAroundTime = calculator.TURN_AROUND_TIMES['FOUR DAY'];
       }
       else if (calculator.testType === calculator.TEST_TYPES.RESIDUAL) {
