@@ -251,6 +251,8 @@
     });
 
     if (labelClaim && haveFourTestResults) {
+      this.results[testType].labelClaim = labelClaim;
+
       var sampleSize = testResults.length;
 
       var mean = testResults.reduce(function(acc, testResult) {
@@ -304,11 +306,12 @@
     }
 
     var failedTestResultsCount = 0;
+    var maxVariance = this.results[testType].labelClaim <= 5 ? 40 : 15;
 
     this.results[testType].testResults.forEach(function(testResult, index) {
       outputs.$testResults[index].text(testResult + '%');
 
-      if (Math.abs(testResult) > 15) {
+      if (Math.abs(testResult) > maxVariance) {
         outputs.$testResults[index].css('color', failed);
         failedTestResultsCount += 1;
       } else {
