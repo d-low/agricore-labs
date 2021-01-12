@@ -24,36 +24,56 @@ var calculator = {
     'HEAVY METALS': {
       'BEFORE 10:30AM': {
         1: {
-          'FOUR DAY' : 4
+          'FOUR DAY': 4,
+          'NEXT DAY': 2,
+          'SAME DAY': 1,
         },
         2: {
-          'FOUR DAY' : 5
+          'FOUR DAY': 5,
+          'NEXT DAY': 3,
+          'SAME DAY': 2,
         },
         3: {
-          'FOUR DAY' : 1
+          'FOUR DAY': 1,
+          'NEXT DAY': 4,
+          'SAME DAY': 3,
         },
         4: {
-          'FOUR DAY' : 2
+          'FOUR DAY': 2,
+          'NEXT DAY': 5,
+          'SAME DAY': 4,
         },
         5: {
-          'FOUR DAY' : 3
+          'FOUR DAY': 3,
+          'NEXT DAY': 1,
+          'SAME DAY': 5,
         }
       }, // end HEAVY METALS - BEFORE 10:30AM
       'AFTER 10:30AM': {
         1: {
-          'FOUR DAY' : 5
+          'FOUR DAY': 5,
+          'NEXT DAY': 3,
+          'SAME DAY': 2,
         },
         2: {
-          'FOUR DAY' : 1
+          'FOUR DAY': 1,
+          'NEXT DAY': 4,
+          'SAME DAY': 3,
         },
         3: {
-          'FOUR DAY' : 2
+          'FOUR DAY': 2,
+          'NEXT DAY': 5,
+          'SAME DAY': 4,
         },
         4: {
-          'FOUR DAY' : 3
+          'FOUR DAY': 3,
+          'NEXT DAY': 1,
+          'SAME DAY': 5,
         },
         5: {
-          'FOUR DAY' : 4
+          'FOUR DAY': 4,
+          'NEXT DAY': 2,
+          'SAME DAY': 1,
         }
       }, // end HEAVY METALS - AFTER 10:30AM
     }, // end HEAVY METALS
@@ -326,7 +346,8 @@ var calculator = {
   },
 
   canSelectTurnAroundTime: function() {
-    if (this.testType === this.TEST_TYPES.POTENCY
+    if (this.testType === this.TEST_TYPES['HEAVY METALS']
+        || this.testType === this.TEST_TYPES.POTENCY
         || this.testType === this.TEST_TYPES.PESTICIDES) {
       return true;
     }
@@ -524,10 +545,10 @@ var calculatorBehavior = {
       );
     }
 
-    // Allow for swapping the two day button with the five day button by setting
+    // Allow for swapping the two day button with the four day button by setting
     // each to the same jQuery element reference.
     // SEE: toggleSteps() below.
-    this.turnAroundTimeButtons['FIVE DAY'] = this.turnAroundTimeButtons['TWO DAY'];
+    this.turnAroundTimeButtons['FOUR DAY'] = this.turnAroundTimeButtons['TWO DAY'];
 
     this.enterButton = jQuery('a[title="ENTER"]');
     this.enterButton.on('click', jQuery.proxy(this.enter_click, this));
@@ -617,13 +638,12 @@ var calculatorBehavior = {
     if (calculator.canSelectTurnAroundTime()) {
       this.turnAroundTime.forEach(function(el) { el.show(); });
 
-      // Relabel the two day button as five day when switching to heavy metals
+      // Relabel the two day button as four day when switching to heavy metals
       // or else ensure it's labled as two day.
       // SEE: bindEvents() above.
       if (calculator.testType === calculator.TEST_TYPES['HEAVY METALS']) {
-        this.turnAroundTimeButtons['FIVE DAY'].attr('title', 'FIVE DAY');
-        this.turnAroundTimeButtons['FIVE DAY'].find('span').text('FIVE DAY');
-
+        this.turnAroundTimeButtons['FOUR DAY'].attr('title', 'FOUR DAY');
+        this.turnAroundTimeButtons['FOUR DAY'].find('span').text('FOUR DAY');
       } else {
         this.turnAroundTimeButtons['TWO DAY'].attr('title', 'TWO DAY');
         this.turnAroundTimeButtons['TWO DAY'].find('span').text('TWO DAY');
