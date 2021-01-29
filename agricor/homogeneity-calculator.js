@@ -306,7 +306,7 @@
     }
 
     var failedTestResultsCount = 0;
-    var maxVariance = this.results[testType].labelClaim <= 5 ? 40 : 15;
+    var maxVariance = this.results[testType].labelClaim <= 2.5 ? 40 : 15;
 
     this.results[testType].testResults.forEach(function(testResult, index) {
       outputs.$testResults[index].text(testResult + '%');
@@ -317,6 +317,13 @@
       } else {
         outputs.$testResults[index].css('color', '');
       }
+    });
+
+    // Update the % variance text to reflect the current max variance
+    [outputs.$testResultFailureDetails, outputs.$testResultSuccessDetails].forEach(function($el) {
+      var html = $el.html();
+      html = html.replace(/\d\d% variance/, maxVariance + '% variance');
+      $el.html(html);
     });
 
     outputs.$testResultCopy.show();
